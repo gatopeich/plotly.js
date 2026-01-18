@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Custom Marker Functions - Backward Compatibility</title>
+    <script src="../dist/plotly-gatopeich-04ebe10b9.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { color: #333; }
+        .info { background: #e7f3ff; padding: 10px; border-left: 4px solid #3b82f6; margin: 10px 0; }
+        code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h2>Custom Marker Functions - Backward Compatibility</h2>
+    <div class="info">
+        <strong>Simple functions</strong> using only <code>(r)</code> still work alongside
+        <strong>data-aware functions</strong> using <code>(r, d, trace)</code>.
+    </div>
+    <div id="test1" style="width: 700px; height: 400px;"></div>
+
+    <script>
+    // SIMPLE STYLE: just (r) - backward compatible
+    function simpleMarker(r) {
+        // Diamond shape
+        return 'M' + r + ',0L0,' + r + 'L-' + r + ',0L0,-' + r + 'Z';
+    }
+
+    // DATA-AWARE STYLE: (r, d, trace) - accesses customdata via d.data
+    function dataAwareMarker(r, d, trace) {
+        var category = d.data;
+        if (category === 'large') {
+            // Larger diamond for 'large' category
+            var r2 = r * 1.5;
+            return 'M' + r2 + ',0L0,' + r2 + 'L-' + r2 + ',0L0,-' + r2 + 'Z';
+        }
+        // Circle for other categories
+        return 'M' + r + ',0A' + r + ',' + r + ' 0 1,1 0,-' + r +
+               'A' + r + ',' + r + ' 0 0,1 ' + r + ',0Z';
+    }
+
+    Plotly.newPlot('test1', [{
+        name: 'Simple (r only)',
+        type: 'scatter',
+        x: [1, 2, 3],
+        y: [1, 1, 1],
+        mode: 'markers',
+        marker: {
+            symbol: simpleMarker,
+            size: 20,
+            color: 'blue'
+        }
+    }, {
+        name: 'Data-aware (r, d, trace)',
+        type: 'scatter',
+        x: [1, 2, 3],
+        y: [2, 2, 2],
+        customdata: ['small', 'large', 'small'],
+        mode: 'markers',
+        marker: {
+            symbol: dataAwareMarker,
+            size: 20,
+            color: 'red'
+        }
+    }], {
+        title: 'Both simple and data-aware marker functions work together',
+        showlegend: true,
+        xaxis: { range: [0, 4] },
+        yaxis: { range: [0, 3] }
+    });
+    </script>
+</body>
+</html>
