@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Custom Marker Functions - Backward Compatibility</title>
-    <script src="../dist/plotly-gatopeich-04ebe10b9.min.js"></script>
+    <title>Custom Markers - With and Without Customdata</title>
+    <script src="../dist/plotly-gatopeich-1c0e46736.min.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h2 { color: #333; }
@@ -12,61 +12,84 @@
     </style>
 </head>
 <body>
-    <h2>Custom Marker Functions - Backward Compatibility</h2>
+    <h2>Custom Markers - With and Without Customdata</h2>
     <div class="info">
-        <strong>Simple functions</strong> using only <code>(r)</code> still work alongside
-        <strong>data-aware functions</strong> using <code>(r, d, trace)</code>.
+        <strong>Simple markers</strong> use <code>function(r)</code><br>
+        <strong>Data-aware markers</strong> use <code>function(r, customdata)</code>
     </div>
-    <div id="test1" style="width: 700px; height: 400px;"></div>
+    <div id="plot" style="width: 700px; height: 400px;"></div>
 
     <script>
-    // SIMPLE STYLE: just (r) - backward compatible
-    function simpleMarker(r) {
-        // Diamond shape
+    // SIMPLE: just uses radius - diamond shape
+    function diamondMarker(r) {
         return 'M' + r + ',0L0,' + r + 'L-' + r + ',0L0,-' + r + 'Z';
     }
 
-    // DATA-AWARE STYLE: (r, d, trace) - accesses customdata via d.data
-    function dataAwareMarker(r, d, trace) {
-        var category = d.data;
-        if (category === 'large') {
-            // Larger diamond for 'large' category
-            var r2 = r * 1.5;
+    // SIMPLE: star shape
+    function starMarker(r) {
+        var points = 5, path = 'M';
+        for (var i = 0; i < points * 2; i++) {
+            var radius = i % 2 === 0 ? r : r * 0.4;
+            var ang = (i * Math.PI) / points - Math.PI / 2;
+            path += (i === 0 ? '' : 'L') +
+                    (radius * Math.cos(ang)).toFixed(2) + ',' +
+                    (radius * Math.sin(ang)).toFixed(2);
+        }
+        return path + 'Z';
+    }
+
+    // DATA-AWARE: shape depends on customdata[i]
+    function dataAwareMarker(r, customdata) {
+        var type = customdata;
+        if (type === 'big') {
+            // Larger diamond
+            var r2 = r * 1.4;
             return 'M' + r2 + ',0L0,' + r2 + 'L-' + r2 + ',0L0,-' + r2 + 'Z';
         }
-        // Circle for other categories
+        if (type === 'star') {
+            // Star shape
+            var points = 5, path = 'M';
+            for (var i = 0; i < points * 2; i++) {
+                var radius = i % 2 === 0 ? r : r * 0.4;
+                var ang = (i * Math.PI) / points - Math.PI / 2;
+                path += (i === 0 ? '' : 'L') +
+                        (radius * Math.cos(ang)).toFixed(2) + ',' +
+                        (radius * Math.sin(ang)).toFixed(2);
+            }
+            return path + 'Z';
+        }
+        // Default: circle
         return 'M' + r + ',0A' + r + ',' + r + ' 0 1,1 0,-' + r +
                'A' + r + ',' + r + ' 0 0,1 ' + r + ',0Z';
     }
 
-    Plotly.newPlot('test1', [{
-        name: 'Simple (r only)',
+    Plotly.newPlot('plot', [{
+        name: 'Simple: diamond(r)',
         type: 'scatter',
-        x: [1, 2, 3],
-        y: [1, 1, 1],
+        x: [1, 2, 3, 4],
+        y: [1, 1, 1, 1],
         mode: 'markers',
-        marker: {
-            symbol: simpleMarker,
-            size: 20,
-            color: 'blue'
-        }
+        marker: { symbol: diamondMarker, size: 25, color: '#3b82f6' }
     }, {
-        name: 'Data-aware (r, d, trace)',
+        name: 'Simple: star(r)',
         type: 'scatter',
-        x: [1, 2, 3],
-        y: [2, 2, 2],
-        customdata: ['small', 'large', 'small'],
+        x: [1, 2, 3, 4],
+        y: [2, 2, 2, 2],
         mode: 'markers',
-        marker: {
-            symbol: dataAwareMarker,
-            size: 20,
-            color: 'red'
-        }
+        marker: { symbol: starMarker, size: 25, color: '#f59e0b' }
+    }, {
+        name: 'Data-aware: (r, customdata)',
+        type: 'scatter',
+        x: [1, 2, 3, 4],
+        y: [3, 3, 3, 3],
+        customdata: ['circle', 'big', 'star', 'circle'],
+        mode: 'markers',
+        marker: { symbol: dataAwareMarker, size: 25, color: '#10b981' }
     }], {
-        title: 'Both simple and data-aware marker functions work together',
-        showlegend: true,
-        xaxis: { range: [0, 4] },
-        yaxis: { range: [0, 3] }
+        title: 'Custom Marker Functions',
+        xaxis: { range: [0, 5] },
+        yaxis: { range: [0, 4], tickvals: [1, 2, 3], ticktext: ['Diamond', 'Star', 'Data-driven'] },
+        showlegend: true
     });
     </script>
 </body>
