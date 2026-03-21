@@ -380,20 +380,35 @@ var MAXSYMBOL = drawing.symbolNames.length;
 var DOTPATH = 'M0,0.5L0.5,0L0,-0.5L-0.5,0Z';
 drawing.symbolDotPath = DOTPATH;
 
+// Pre-build dot-variant paths: symbolPaths[idx + MAXSYMBOL] = base path + dot subpath.
+// Symbols with noDot stay undefined (dot variants are not valid for them).
+for(var _i = 0; _i < MAXSYMBOL; _i++) {
+    if(!drawing.symbolNoDot[_i]) {
+        drawing.symbolPaths[_i + MAXSYMBOL] = drawing.symbolPaths[_i] + DOTPATH;
+    }
+}
+
+// Global map for custom SVG path strings → their n (starts at 2 * MAXSYMBOL).
+// Built-in non-dot n = idx (0…MAXSYMBOL-1).
+// Built-in dot     n = idx + MAXSYMBOL.
+// Custom path      n = 2*MAXSYMBOL + counter.
+var _customSymMap = {};
+
 /**
  * Unified symbol lookup.
  * Accepts a built-in name ('circle', 'circle-open', 'circle-dot', …),
  * a legacy numeric code (0, 100, 200, 300, …), or a raw SVG path string
  * (any string starting with 'M'/'m').
  *
- * Returns {path, open, dot, backoff, noDot, noFill}
- * – for built-ins, `base` is also set to the 0-based index.
+ * Returns {n, path, open, dot, backoff, noDot, noFill} where n is the
+ * globally-unique integer used as the <symbol> id.
  * Returns null for unrecognised input (callers should fall back to circle).
  */
 drawing.lookupSymbol = function (v) {
-    // Raw SVG path string – pass straight through
+    // Raw SVG path string — assign a stable global n and pass through.
     if (typeof v === 'string' && /^[Mm]/.test(v)) {
-        return { path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
+        if (!_customSymMap[v]) _customSymMap[v] = 2 * MAXSYMBOL + Object.keys(_customSymMap).length;
+        return { n: _customSymMap[v], path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
     }
 
     var name, open = false, dot = false, idx;
@@ -415,9 +430,11 @@ drawing.lookupSymbol = function (v) {
         return null;
     }
 
+    var symN = dot ? idx + MAXSYMBOL : idx;
     return {
+        n:    symN,
         name: name,
-        path: drawing.symbolPaths[idx],
+        path: drawing.symbolPaths[symN],
         open: open,
         dot:  dot,
         backoff: drawing.symbolBackOffs[idx] || 0,
@@ -436,24 +453,13 @@ drawing.symbolNumber = function (v) {
 
 drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
-    // Map lives on the <defs> DOM node — one map per SVG, auto-freed with the element.
-    var node = defs.node();
-    var symMap = node._symMap || (node._symMap = {});
-
-    // Key: built-in name (+ '.' suffix for dot variant) or raw path string for custom
-    var key = sym.name ? sym.name + (sym.dot ? '.' : '') : sym.path;
-
-    if (!(key in symMap)) symMap[key] = Object.keys(symMap).length;
-    var id = '' + symMap[key];
-
+    // sym.n is the globally-unique integer for this symbol variant; use as <symbol> id.
+    var id = '' + sym.n;
     if (defs.select('#' + id).empty()) {
-        var el = defs.append('symbol')
+        defs.append('symbol')
             .attr('id', id)
-            .attr('overflow', 'visible');
-        el.append('path').attr('d', sym.path);
-        if (sym.dot && !sym.noDot) {
-            el.append('path').attr('d', DOTPATH);
-        }
+            .attr('overflow', 'visible')
+            .append('path').attr('d', sym.path);
     }
     return id;
 };

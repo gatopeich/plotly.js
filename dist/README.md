@@ -160,7 +160,7 @@ The `gl3d` partial bundle contains trace modules `cone`, `isosurface`, `mesh3d`,
 
 | Raw size | Minified size | Minified + gzip size |
 |------|-----------------|------------------------|
-| 4.2 MB | 1.6 MB | 532.1 kB |
+| 4.2 MB | 1.6 MB | 532.2 kB |
 
 #### CDN links
 > https://cdn.plot.ly/plotly-gl3d-3.4.0.js

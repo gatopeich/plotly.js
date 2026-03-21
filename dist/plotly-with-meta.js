@@ -25333,9 +25333,17 @@ var Plotly = (() => {
       var MAXSYMBOL = drawing.symbolNames.length;
       var DOTPATH = "M0,0.5L0.5,0L0,-0.5L-0.5,0Z";
       drawing.symbolDotPath = DOTPATH;
+      for (_i = 0; _i < MAXSYMBOL; _i++) {
+        if (!drawing.symbolNoDot[_i]) {
+          drawing.symbolPaths[_i + MAXSYMBOL] = drawing.symbolPaths[_i] + DOTPATH;
+        }
+      }
+      var _i;
+      var _customSymMap = {};
       drawing.lookupSymbol = function(v) {
         if (typeof v === "string" && /^[Mm]/.test(v)) {
-          return { path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
+          if (!_customSymMap[v]) _customSymMap[v] = 2 * MAXSYMBOL + Object.keys(_customSymMap).length;
+          return { n: _customSymMap[v], path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
         }
         var name2, open = false, dot = false, idx;
         if (isNumeric(v)) {
@@ -25361,9 +25369,11 @@ var Plotly = (() => {
         } else {
           return null;
         }
+        var symN = dot ? idx + MAXSYMBOL : idx;
         return {
+          n: symN,
           name: name2,
-          path: drawing.symbolPaths[idx],
+          path: drawing.symbolPaths[symN],
           open,
           dot,
           backoff: drawing.symbolBackOffs[idx] || 0,
@@ -25379,17 +25389,9 @@ var Plotly = (() => {
       };
       drawing.ensureSymbolDef = function(gd, sym) {
         var defs = gd._fullLayout._defs;
-        var node = defs.node();
-        var symMap = node._symMap || (node._symMap = {});
-        var key = sym.name ? sym.name + (sym.dot ? "." : "") : sym.path;
-        if (!(key in symMap)) symMap[key] = Object.keys(symMap).length;
-        var id = "" + symMap[key];
+        var id = "" + sym.n;
         if (defs.select("#" + id).empty()) {
-          var el = defs.append("symbol").attr("id", id).attr("overflow", "visible");
-          el.append("path").attr("d", sym.path);
-          if (sym.dot && !sym.noDot) {
-            el.append("path").attr("d", DOTPATH);
-          }
+          defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
         }
         return id;
       };
