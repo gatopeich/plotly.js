@@ -461,7 +461,10 @@ var SYMBOL_SDF = {};
 // Small circle path (r=1) used as center dot in SDF symbol rendering
 var SYMBOL_SVG_CIRCLE = 'M1,0A1,1 0 1,1 0,-1A1,1 0 0,1 1,0Z';
 
-// Rotate an SVG path string by angleDeg degrees around the origin.
+// Rotate an SVG path string by angleDeg degrees around the origin, for use
+// in the SDF (signed-distance-field) pipeline where svg-path-sdf only accepts
+// a flat path string and has no SVG-transform support.
+// SVG markers (scatter/box) rotate via transform="rotate(...)" on <use> instead.
 // Only handles M/L/H/V/A commands (sufficient for all built-in symbol paths).
 function rotatePath(path, angleDeg) {
     if (!angleDeg || angleDeg % 360 === 0) return path;
