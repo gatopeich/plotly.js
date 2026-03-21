@@ -4,14 +4,6 @@
 * All rights reserved.
 * Licensed under the MIT license
 */
-(
- function(root, factory) {
-  if (typeof module === "object" && module.exports) {
-   module.exports = factory();
-  } else {
-   root.moduleName = factory();
-  }
-} (typeof self !== "undefined" ? self : this, () => {
 "use strict";
 var Plotly = (() => {
   var __create = Object.create;
@@ -10989,6 +10981,10 @@ var Plotly = (() => {
         },
         enumerated: {
           coerceFunction: function(v, propOut, dflt, opts) {
+            if (typeof v === "function") {
+              propOut.set(v);
+              return;
+            }
             if (opts.coerceNumber) v = +v;
             if (opts.values.indexOf(v) === -1) propOut.set(dflt);
             else propOut.set(v);
@@ -13795,9 +13791,9 @@ var Plotly = (() => {
   var require_maplibre_gl = __commonJS({
     "node_modules/maplibre-gl/dist/maplibre-gl.css"() {
       (function() {
-        if (!document.getElementById("a75c73da1cd7a97e8992659f6aed556255838daadea9ca0c9fc3af7f1ddf63c0")) {
+        if (!document.getElementById("17ae9e42e4fa3e7c06fe95ec91b1119e5a4c05dc79afabe050bbaba88da47580")) {
           var e = document.createElement("style");
-          e.id = "a75c73da1cd7a97e8992659f6aed556255838daadea9ca0c9fc3af7f1ddf63c0";
+          e.id = "17ae9e42e4fa3e7c06fe95ec91b1119e5a4c05dc79afabe050bbaba88da47580";
           e.textContent = `.maplibregl-map{font:12px/20px Helvetica Neue,Arial,Helvetica,sans-serif;overflow:hidden;position:relative;-webkit-tap-highlight-color:rgb(0 0 0/0)}.maplibregl-canvas{left:0;position:absolute;top:0}.maplibregl-map:fullscreen{height:100%;width:100%}.maplibregl-ctrl-group button.maplibregl-ctrl-compass{touch-action:none}.maplibregl-canvas-container.maplibregl-interactive,.maplibregl-ctrl-group button.maplibregl-ctrl-compass{cursor:grab;-webkit-user-select:none;-moz-user-select:none;user-select:none}.maplibregl-canvas-container.maplibregl-interactive.maplibregl-track-pointer{cursor:pointer}.maplibregl-canvas-container.maplibregl-interactive:active,.maplibregl-ctrl-group button.maplibregl-ctrl-compass:active{cursor:grabbing}.maplibregl-canvas-container.maplibregl-touch-zoom-rotate,.maplibregl-canvas-container.maplibregl-touch-zoom-rotate .maplibregl-canvas{touch-action:pan-x pan-y}.maplibregl-canvas-container.maplibregl-touch-drag-pan,.maplibregl-canvas-container.maplibregl-touch-drag-pan .maplibregl-canvas{touch-action:pinch-zoom}.maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan,.maplibregl-canvas-container.maplibregl-touch-zoom-rotate.maplibregl-touch-drag-pan .maplibregl-canvas{touch-action:none}.maplibregl-canvas-container.maplibregl-touch-drag-pan.maplibregl-cooperative-gestures,.maplibregl-canvas-container.maplibregl-touch-drag-pan.maplibregl-cooperative-gestures .maplibregl-canvas{touch-action:pan-x pan-y}.maplibregl-ctrl-bottom-left,.maplibregl-ctrl-bottom-right,.maplibregl-ctrl-top-left,.maplibregl-ctrl-top-right{pointer-events:none;position:absolute;z-index:2}.maplibregl-ctrl-top-left{left:0;top:0}.maplibregl-ctrl-top-right{right:0;top:0}.maplibregl-ctrl-bottom-left{bottom:0;left:0}.maplibregl-ctrl-bottom-right{bottom:0;right:0}.maplibregl-ctrl{clear:both;pointer-events:auto;transform:translate(0)}.maplibregl-ctrl-top-left .maplibregl-ctrl{float:left;margin:10px 0 0 10px}.maplibregl-ctrl-top-right .maplibregl-ctrl{float:right;margin:10px 10px 0 0}.maplibregl-ctrl-bottom-left .maplibregl-ctrl{float:left;margin:0 0 10px 10px}.maplibregl-ctrl-bottom-right .maplibregl-ctrl{float:right;margin:0 10px 10px 0}.maplibregl-ctrl-group{background:#fff;border-radius:4px}.maplibregl-ctrl-group:not(:empty){box-shadow:0 0 0 2px rgba(0,0,0,.1)}@media (forced-colors:active){.maplibregl-ctrl-group:not(:empty){box-shadow:0 0 0 2px ButtonText}}.maplibregl-ctrl-group button{background-color:transparent;border:0;box-sizing:border-box;cursor:pointer;display:block;height:29px;outline:none;padding:0;width:29px}.maplibregl-ctrl-group button+button{border-top:1px solid #ddd}.maplibregl-ctrl button .maplibregl-ctrl-icon{background-position:50%;background-repeat:no-repeat;display:block;height:100%;width:100%}@media (forced-colors:active){.maplibregl-ctrl-icon{background-color:transparent}.maplibregl-ctrl-group button+button{border-top:1px solid ButtonText}}.maplibregl-ctrl button::-moz-focus-inner{border:0;padding:0}.maplibregl-ctrl-attrib-button:focus,.maplibregl-ctrl-group button:focus{box-shadow:0 0 2px 2px #0096ff}.maplibregl-ctrl button:disabled{cursor:not-allowed}.maplibregl-ctrl button:disabled .maplibregl-ctrl-icon{opacity:.25}.maplibregl-ctrl button:not(:disabled):hover{background-color:rgb(0 0 0/5%)}.maplibregl-ctrl-group button:focus:focus-visible{box-shadow:0 0 2px 2px #0096ff}.maplibregl-ctrl-group button:focus:not(:focus-visible){box-shadow:none}.maplibregl-ctrl-group button:focus:first-child{border-radius:4px 4px 0 0}.maplibregl-ctrl-group button:focus:last-child{border-radius:0 0 4px 4px}.maplibregl-ctrl-group button:focus:only-child{border-radius:inherit}.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-fullscreen .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M24 16v5.5c0 1.75-.75 2.5-2.5 2.5H16v-1l3-1.5-4-5.5 1-1 5.5 4 1.5-3zM6 16l1.5 3 5.5-4 1 1-4 5.5 3 1.5v1H7.5C5.75 24 5 23.25 5 21.5V16zm7-11v1l-3 1.5 4 5.5-1 1-5.5-4L6 13H5V7.5C5 5.75 5.75 5 7.5 5zm11 2.5c0-1.75-.75-2.5-2.5-2.5H16v1l3 1.5-4 5.5 1 1 5.5-4 1.5 3h1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-shrink .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='M18.5 16c-1.75 0-2.5.75-2.5 2.5V24h1l1.5-3 5.5 4 1-1-4-5.5 3-1.5v-1zM13 18.5c0-1.75-.75-2.5-2.5-2.5H5v1l3 1.5L4 24l1 1 5.5-4 1.5 3h1zm3-8c0 1.75.75 2.5 2.5 2.5H24v-1l-3-1.5L25 5l-1-1-5.5 4L17 5h-1zM10.5 13c1.75 0 2.5-.75 2.5-2.5V5h-1l-1.5 3L5 4 4 5l4 5.5L5 12v1z'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-compass .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 29 29'%3E%3Cpath d='m10.5 14 4-8 4 8z'/%3E%3Cpath fill='%23ccc' d='m10.5 16 4 8 4-8z'/%3E%3C/svg%3E")}}.maplibregl-ctrl button.maplibregl-ctrl-terrain .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='%23333' viewBox='0 0 22 22'%3E%3Cpath d='m1.754 13.406 4.453-4.851 3.09 3.09 3.281 3.277.969-.969-3.309-3.312 3.844-4.121 6.148 6.886h1.082v-.855l-7.207-8.07-4.84 5.187L6.169 6.57l-5.48 5.965v.871ZM.688 16.844h20.625v1.375H.688Zm0 0'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-terrain-enabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' fill='%2333b5e5' viewBox='0 0 22 22'%3E%3Cpath d='m1.754 13.406 4.453-4.851 3.09 3.09 3.281 3.277.969-.969-3.309-3.312 3.844-4.121 6.148 6.886h1.082v-.855l-7.207-8.07-4.84 5.187L6.169 6.57l-5.48 5.965v.871ZM.688 16.844h20.625v1.375H.688Zm0 0'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23333' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23aaa' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e58978' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e54e33' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-waiting .maplibregl-ctrl-icon{animation:maplibregl-spin 2s linear infinite}@media (forced-colors:active){.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23fff' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23999' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-active-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e58978' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%2333b5e5' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate.maplibregl-ctrl-geolocate-background-error .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23e54e33' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl button.maplibregl-ctrl-geolocate .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E")}.maplibregl-ctrl button.maplibregl-ctrl-geolocate:disabled .maplibregl-ctrl-icon{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='29' height='29' fill='%23666' viewBox='0 0 20 20'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1m0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 1 1 0-7'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3Cpath fill='red' d='m14 5 1 1-9 9-1-1z'/%3E%3C/svg%3E")}}@keyframes maplibregl-spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}a.maplibregl-ctrl-logo{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E");background-repeat:no-repeat;cursor:pointer;display:block;height:23px;margin:0 0 -4px -4px;overflow:hidden;width:88px}a.maplibregl-ctrl-logo.maplibregl-compact{width:14px}@media (forced-colors:active){a.maplibregl-ctrl-logo{background-color:transparent;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E")}}@media (forced-colors:active) and (prefers-color-scheme:light){a.maplibregl-ctrl-logo{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='23' fill='none'%3E%3Cpath fill='%23000' fill-opacity='.4' fill-rule='evenodd' d='M17.408 16.796h-1.827l2.501-12.095h.198l3.324 6.533.988 2.19.988-2.19 3.258-6.533h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.929 5.644h-.098l-2.914-5.644-.757-1.71-.345 1.71zm1.958-3.42-.726 3.663a1.255 1.255 0 0 1-1.232 1.011h-1.827a1.255 1.255 0 0 1-1.229-1.509l2.501-12.095a1.255 1.255 0 0 1 1.23-1.001h.197a1.25 1.25 0 0 1 1.12.685l3.19 6.273 3.125-6.263a1.25 1.25 0 0 1 1.123-.695h.181a1.255 1.255 0 0 1 1.227.991l1.443 6.71a5 5 0 0 1 .314-.787l.009-.016a4.6 4.6 0 0 1 1.777-1.887c.782-.46 1.668-.667 2.611-.667a4.6 4.6 0 0 1 1.7.32l.306.134c.21-.16.474-.256.759-.256h1.694a1.255 1.255 0 0 1 1.212.925 1.255 1.255 0 0 1 1.212-.925h1.711c.284 0 .545.094.755.252.613-.3 1.312-.45 2.075-.45 1.356 0 2.557.445 3.482 1.4q.47.48.763 1.064V4.701a1.255 1.255 0 0 1 1.255-1.255h1.86A1.255 1.255 0 0 1 54.44 4.7v9.194h2.217c.19 0 .37.043.532.118v-4.77c0-.356.147-.678.385-.906a2.42 2.42 0 0 1-.682-1.71c0-.665.267-1.253.735-1.7a2.45 2.45 0 0 1 1.722-.674 2.43 2.43 0 0 1 1.705.675q.318.302.504.683V4.7a1.255 1.255 0 0 1 1.255-1.255h1.744A1.255 1.255 0 0 1 65.812 4.7v3.335a4.8 4.8 0 0 1 1.526-.246c.938 0 1.817.214 2.59.69a4.47 4.47 0 0 1 1.67 1.743v-.98a1.255 1.255 0 0 1 1.256-1.256h1.777c.233 0 .451.064.639.174a3.4 3.4 0 0 1 1.567-.372c.346 0 .861.02 1.285.232a1.25 1.25 0 0 1 .689 1.004 4.7 4.7 0 0 1 .853-.588c.795-.44 1.675-.647 2.61-.647 1.385 0 2.65.39 3.525 1.396.836.938 1.168 2.173 1.168 3.528q-.001.515-.056 1.051a1.255 1.255 0 0 1-.947 1.09l.408.952a1.255 1.255 0 0 1-.477 1.552c-.418.268-.92.463-1.458.612-.613.171-1.304.244-2.049.244-1.06 0-2.043-.207-2.886-.698l-.015-.008c-.798-.48-1.419-1.135-1.818-1.963l-.004-.008a5.8 5.8 0 0 1-.548-2.512q0-.429.053-.843a1.3 1.3 0 0 1-.333-.086l-.166-.004c-.223 0-.426.062-.643.228-.03.024-.142.139-.142.59v3.883a1.255 1.255 0 0 1-1.256 1.256h-1.777a1.255 1.255 0 0 1-1.256-1.256V15.69l-.032.057a4.8 4.8 0 0 1-1.86 1.833 5.04 5.04 0 0 1-2.484.634 4.5 4.5 0 0 1-1.935-.424 1.25 1.25 0 0 1-.764.258h-1.71a1.255 1.255 0 0 1-1.256-1.255V7.687a2.4 2.4 0 0 1-.428.625c.253.23.412.561.412.93v7.553a1.255 1.255 0 0 1-1.256 1.255h-1.843a1.25 1.25 0 0 1-.894-.373c-.228.23-.544.373-.894.373H51.32a1.255 1.255 0 0 1-1.256-1.255v-1.251l-.061.117a4.7 4.7 0 0 1-1.782 1.884 4.77 4.77 0 0 1-2.485.67 5.6 5.6 0 0 1-1.485-.188l.009 2.764a1.255 1.255 0 0 1-1.255 1.259h-1.729a1.255 1.255 0 0 1-1.255-1.255v-3.537a1.255 1.255 0 0 1-1.167.793h-1.679a1.25 1.25 0 0 1-.77-.263 4.5 4.5 0 0 1-1.945.429c-.885 0-1.724-.21-2.495-.632l-.017-.01a5 5 0 0 1-1.081-.836 1.255 1.255 0 0 1-1.254 1.312h-1.81a1.255 1.255 0 0 1-1.228-.99l-.782-3.625-2.044 3.939a1.25 1.25 0 0 1-1.115.676h-.098a1.25 1.25 0 0 1-1.116-.68l-2.061-3.994zM35.92 16.63l.207-.114.223-.15q.493-.356.735-.785l.061-.118.033 1.332h1.678V9.242h-1.694l-.033 1.267q-.133-.329-.526-.658l-.032-.028a3.2 3.2 0 0 0-.668-.428l-.27-.12a3.3 3.3 0 0 0-1.235-.23q-1.136-.001-1.974.493a3.36 3.36 0 0 0-1.3 1.382q-.445.89-.444 2.074 0 1.2.51 2.107a3.8 3.8 0 0 0 1.382 1.381 3.9 3.9 0 0 0 1.893.477q.795 0 1.455-.33zm-2.789-5.38q-.576.675-.575 1.762 0 1.102.559 1.794.576.675 1.645.675a2.25 2.25 0 0 0 .934-.19 2.2 2.2 0 0 0 .468-.29l.178-.161a2.2 2.2 0 0 0 .397-.561q.244-.5.244-1.15v-.115q0-.708-.296-1.267l-.043-.077a2.2 2.2 0 0 0-.633-.709l-.13-.086-.047-.028a2.1 2.1 0 0 0-1.073-.285q-1.052 0-1.629.692zm2.316 2.706c.163-.17.28-.407.28-.83v-.114c0-.292-.06-.508-.15-.68a.96.96 0 0 0-.353-.389.85.85 0 0 0-.464-.127c-.4 0-.56.114-.664.239l-.01.012c-.148.174-.275.45-.275.945 0 .506.122.801.27.99.097.11.266.224.68.224.303 0 .504-.09.687-.269zm7.545 1.705a2.6 2.6 0 0 0 .331.423q.319.33.755.548l.173.074q.65.255 1.49.255 1.02 0 1.844-.493a3.45 3.45 0 0 0 1.316-1.4q.493-.904.493-2.089 0-1.909-.988-2.913-.988-1.02-2.584-1.02-.898 0-1.575.347a3 3 0 0 0-.415.262l-.199.166a3.4 3.4 0 0 0-.64.82V9.242h-1.712v11.553h1.729l-.017-5.134zm.53-1.138q.206.29.48.5l.155.11.053.034q.51.296 1.119.297 1.07 0 1.645-.675.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.435 0-.835.16a2 2 0 0 0-.284.136 2 2 0 0 0-.363.254 2.2 2.2 0 0 0-.46.569l-.082.162a2.6 2.6 0 0 0-.213 1.072v.115q0 .707.296 1.267l.135.211zm.964-.818a1.1 1.1 0 0 0 .367.385.94.94 0 0 0 .476.118c.423 0 .59-.117.687-.23.159-.194.28-.478.28-.95 0-.53-.133-.8-.266-.952l-.021-.025c-.078-.094-.231-.221-.68-.221a1 1 0 0 0-.503.135l-.012.007a.86.86 0 0 0-.335.343c-.073.133-.132.324-.132.614v.115a1.4 1.4 0 0 0 .14.66zm15.7-6.222q.347-.346.346-.856a1.05 1.05 0 0 0-.345-.79 1.18 1.18 0 0 0-.84-.329q-.51 0-.855.33a1.05 1.05 0 0 0-.346.79q0 .51.346.855.345.346.856.346.51 0 .839-.346zm4.337 9.314.033-1.332q.191.403.59.747l.098.081a4 4 0 0 0 .316.224l.223.122a3.2 3.2 0 0 0 1.44.322 3.8 3.8 0 0 0 1.875-.477 3.5 3.5 0 0 0 1.382-1.366q.527-.89.526-2.09 0-1.184-.444-2.073a3.24 3.24 0 0 0-1.283-1.399q-.823-.51-1.942-.51a3.5 3.5 0 0 0-1.527.344l-.086.043-.165.09a3 3 0 0 0-.33.214q-.432.315-.656.707a2 2 0 0 0-.099.198l.082-1.283V4.701h-1.744v12.095zm.473-2.509a2.5 2.5 0 0 0 .566.7q.117.098.245.18l.144.08a2.1 2.1 0 0 0 .975.232q1.07 0 1.645-.675.576-.69.576-1.778 0-1.102-.576-1.777-.56-.691-1.645-.692a2.2 2.2 0 0 0-1.015.235q-.22.113-.415.282l-.15.142a2.1 2.1 0 0 0-.42.594q-.223.479-.223 1.1v.115q0 .705.293 1.26zm2.616-.293c.157-.191.28-.479.28-.967 0-.51-.13-.79-.276-.961l-.021-.026c-.082-.1-.232-.225-.67-.225a.87.87 0 0 0-.681.279l-.012.011c-.154.155-.274.38-.274.807v.115c0 .285.057.499.144.669a1.1 1.1 0 0 0 .367.405c.137.082.28.123.455.123.423 0 .59-.118.686-.23zm8.266-3.013q.345-.13.724-.14l.069-.002q.493 0 .642.099l.247-1.794q-.196-.099-.717-.099a2.3 2.3 0 0 0-.545.063 2 2 0 0 0-.411.148 2.2 2.2 0 0 0-.4.249 2.5 2.5 0 0 0-.485.499 2.7 2.7 0 0 0-.32.581l-.05.137v-1.48h-1.778v7.553h1.777v-3.884q0-.546.159-.943a1.5 1.5 0 0 1 .466-.636 2.5 2.5 0 0 1 .399-.253 2 2 0 0 1 .224-.099zm9.784 2.656.05-.922q0-1.743-.856-2.698-.838-.97-2.584-.97-1.119-.001-2.007.493a3.46 3.46 0 0 0-1.4 1.382q-.493.906-.493 2.106 0 1.07.428 1.975.428.89 1.332 1.432.906.526 2.255.526.973 0 1.668-.185l.044-.012.135-.04q.613-.184.984-.421l-.542-1.267q-.3.162-.642.274l-.297.087q-.51.131-1.3.131-.954 0-1.497-.444a1.6 1.6 0 0 1-.192-.193q-.366-.44-.512-1.234l-.004-.021zm-5.427-1.256-.003.022h3.752v-.138q-.011-.727-.288-1.118a1 1 0 0 0-.156-.176q-.46-.428-1.316-.428-.986 0-1.494.604-.379.45-.494 1.234zm-27.053 2.77V4.7h-1.86v12.095h5.333V15.15zm7.103-5.908v7.553h-1.843V9.242h1.843z'/%3E%3Cpath fill='%23fff' d='m19.63 11.151-.757-1.71-.345 1.71-1.12 5.644h-1.827L18.083 4.7h.197l3.325 6.533.988 2.19.988-2.19L26.839 4.7h.181l2.6 12.095h-1.81l-1.218-5.644-.362-1.71-.658 1.71-2.93 5.644h-.098l-2.913-5.644zm14.836 5.81q-1.02 0-1.893-.478a3.8 3.8 0 0 1-1.381-1.382q-.51-.906-.51-2.106 0-1.185.444-2.074a3.36 3.36 0 0 1 1.3-1.382q.839-.494 1.974-.494a3.3 3.3 0 0 1 1.234.231 3.3 3.3 0 0 1 .97.575q.396.33.527.659l.033-1.267h1.694v7.553H37.18l-.033-1.332q-.279.593-1.02 1.053a3.17 3.17 0 0 1-1.662.444zm.296-1.482q.938 0 1.58-.642.642-.66.642-1.711v-.115q0-.708-.296-1.267a2.2 2.2 0 0 0-.807-.872 2.1 2.1 0 0 0-1.119-.313q-1.053 0-1.629.692-.575.675-.575 1.76 0 1.103.559 1.795.577.675 1.645.675zm6.521-6.237h1.711v1.4q.906-1.597 2.83-1.597 1.596 0 2.584 1.02.988 1.005.988 2.914 0 1.185-.493 2.09a3.46 3.46 0 0 1-1.316 1.399 3.5 3.5 0 0 1-1.844.493q-.954 0-1.662-.329a2.67 2.67 0 0 1-1.086-.97l.017 5.134h-1.728zm4.048 6.22q1.07 0 1.645-.674.577-.69.576-1.762 0-1.119-.576-1.777-.558-.675-1.645-.675-.592 0-1.12.296-.51.28-.822.823-.296.527-.296 1.234v.115q0 .708.296 1.267.313.543.823.855.51.296 1.119.297z'/%3E%3Cpath fill='%23e1e3e9' d='M51.325 4.7h1.86v10.45h3.473v1.646h-5.333zm7.12 4.542h1.843v7.553h-1.843zm.905-1.415a1.16 1.16 0 0 1-.856-.346 1.17 1.17 0 0 1-.346-.856 1.05 1.05 0 0 1 .346-.79q.346-.329.856-.329.494 0 .839.33a1.05 1.05 0 0 1 .345.79 1.16 1.16 0 0 1-.345.855q-.33.346-.84.346zm7.875 9.133a3.17 3.17 0 0 1-1.662-.444q-.723-.46-1.004-1.053l-.033 1.332h-1.71V4.701h1.743v4.657l-.082 1.283q.279-.658 1.086-1.119a3.5 3.5 0 0 1 1.778-.477q1.119 0 1.942.51a3.24 3.24 0 0 1 1.283 1.4q.445.888.444 2.072 0 1.201-.526 2.09a3.5 3.5 0 0 1-1.382 1.366 3.8 3.8 0 0 1-1.876.477zm-.296-1.481q1.069 0 1.645-.675.577-.69.577-1.778 0-1.102-.577-1.776-.56-.691-1.645-.692a2.12 2.12 0 0 0-1.58.659q-.642.641-.642 1.694v.115q0 .71.296 1.267a2.4 2.4 0 0 0 .807.872 2.1 2.1 0 0 0 1.119.313zm5.927-6.237h1.777v1.481q.263-.757.856-1.217a2.14 2.14 0 0 1 1.349-.46q.527 0 .724.098l-.247 1.794q-.149-.099-.642-.099-.774 0-1.416.494-.626.493-.626 1.58v3.883h-1.777V9.242zm9.534 7.718q-1.35 0-2.255-.526-.904-.543-1.332-1.432a4.6 4.6 0 0 1-.428-1.975q0-1.2.493-2.106a3.46 3.46 0 0 1 1.4-1.382q.889-.495 2.007-.494 1.744 0 2.584.97.855.956.856 2.7 0 .444-.05.92h-5.43q.18 1.005.708 1.45.542.443 1.497.443.79 0 1.3-.131a4 4 0 0 0 .938-.362l.542 1.267q-.411.263-1.119.46-.708.198-1.711.197zm1.596-4.558q.016-1.02-.444-1.432-.46-.428-1.316-.428-1.728 0-1.991 1.86z'/%3E%3Cpath d='M5.074 15.948a.484.657 0 0 0-.486.659v1.84a.484.657 0 0 0 .486.659h4.101a.484.657 0 0 0 .486-.659v-1.84a.484.657 0 0 0-.486-.659zm3.56 1.16H5.617v.838h3.017z' style='fill:%23fff;fill-rule:evenodd;stroke-width:1.03600001'/%3E%3Cg style='stroke-width:1.12603545'%3E%3Cpath d='M-9.408-1.416c-3.833-.025-7.056 2.912-7.08 6.615-.02 3.08 1.653 4.832 3.107 6.268.903.892 1.721 1.74 2.32 2.902l-.525-.004c-.543-.003-.992.304-1.24.639a1.87 1.87 0 0 0-.362 1.121l-.011 1.877c-.003.402.104.787.347 1.125.244.338.688.653 1.23.656l4.142.028c.542.003.99-.306 1.238-.641a1.87 1.87 0 0 0 .363-1.121l.012-1.875a1.87 1.87 0 0 0-.348-1.127c-.243-.338-.688-.653-1.23-.656l-.518-.004c.597-1.145 1.425-1.983 2.348-2.87 1.473-1.414 3.18-3.149 3.2-6.226-.016-3.59-2.923-6.684-6.993-6.707m-.006 1.1v.002c3.274.02 5.92 2.532 5.9 5.6-.017 2.706-1.39 4.026-2.863 5.44-1.034.994-2.118 2.033-2.814 3.633-.018.041-.052.055-.075.065q-.013.004-.02.01a.34.34 0 0 1-.226.084.34.34 0 0 1-.224-.086l-.092-.077c-.699-1.615-1.768-2.669-2.781-3.67-1.454-1.435-2.797-2.762-2.78-5.478.02-3.067 2.7-5.545 5.975-5.523m-.02 2.826c-1.62-.01-2.944 1.315-2.955 2.96-.01 1.646 1.295 2.988 2.916 2.999h.002c1.621.01 2.943-1.316 2.953-2.961.011-1.646-1.294-2.988-2.916-2.998m-.005 1.1c1.017.006 1.829.83 1.822 1.89s-.83 1.874-1.848 1.867c-1.018-.006-1.829-.83-1.822-1.89s.83-1.874 1.848-1.868m-2.155 11.857 4.14.025c.271.002.49.305.487.676l-.013 1.875c-.003.37-.224.67-.495.668l-4.14-.025c-.27-.002-.487-.306-.485-.676l.012-1.875c.003-.37.224-.67.494-.668' style='color:%23000;font-style:normal;font-variant:normal;font-weight:400;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:%23000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:evenodd;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:%23000;solid-opacity:1;vector-effect:none;fill:%23000;fill-opacity:.4;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-9.415-.316C-12.69-.338-15.37 2.14-15.39 5.207c-.017 2.716 1.326 4.041 2.78 5.477 1.013 1 2.081 2.055 2.78 3.67l.092.076a.34.34 0 0 0 .225.086.34.34 0 0 0 .227-.083l.019-.01c.022-.009.057-.024.074-.064.697-1.6 1.78-2.64 2.814-3.634 1.473-1.414 2.847-2.733 2.864-5.44.02-3.067-2.627-5.58-5.901-5.601m-.057 8.784c1.621.011 2.944-1.315 2.955-2.96.01-1.646-1.295-2.988-2.916-2.999-1.622-.01-2.945 1.315-2.955 2.96s1.295 2.989 2.916 3' style='clip-rule:evenodd;fill:%23e1e3e9;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3Cpath d='M-11.594 15.465c-.27-.002-.492.297-.494.668l-.012 1.876c-.003.371.214.673.485.675l4.14.027c.271.002.492-.298.495-.668l.012-1.877c.003-.37-.215-.672-.485-.674z' style='clip-rule:evenodd;fill:%23fff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.47727823;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:.4' transform='translate(15.553 2.85)scale(.88807)'/%3E%3C/g%3E%3C/svg%3E")}}.maplibregl-ctrl.maplibregl-ctrl-attrib{background-color:hsla(0,0%,100%,.5);margin:0;padding:0 5px}@media screen{.maplibregl-ctrl-attrib.maplibregl-compact{background-color:#fff;border-radius:12px;box-sizing:content-box;color:#000;margin:10px;min-height:20px;padding:2px 24px 2px 0;position:relative}.maplibregl-ctrl-attrib.maplibregl-compact-show{padding:2px 28px 2px 8px;visibility:visible}.maplibregl-ctrl-bottom-left>.maplibregl-ctrl-attrib.maplibregl-compact-show,.maplibregl-ctrl-top-left>.maplibregl-ctrl-attrib.maplibregl-compact-show{border-radius:12px;padding:2px 8px 2px 28px}.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-inner{display:none}.maplibregl-ctrl-attrib-button{background-color:hsla(0,0%,100%,.5);background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E");border:0;border-radius:12px;box-sizing:border-box;cursor:pointer;display:none;height:24px;outline:none;position:absolute;right:0;top:0;width:24px}.maplibregl-ctrl-attrib summary.maplibregl-ctrl-attrib-button{-webkit-appearance:none;-moz-appearance:none;appearance:none;list-style:none}.maplibregl-ctrl-attrib summary.maplibregl-ctrl-attrib-button::-webkit-details-marker{display:none}.maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib-button,.maplibregl-ctrl-top-left .maplibregl-ctrl-attrib-button{left:0}.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-button,.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner{display:block}.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-button{background-color:rgb(0 0 0/5%)}.maplibregl-ctrl-bottom-right>.maplibregl-ctrl-attrib.maplibregl-compact:after{bottom:0;right:0}.maplibregl-ctrl-top-right>.maplibregl-ctrl-attrib.maplibregl-compact:after{right:0;top:0}.maplibregl-ctrl-top-left>.maplibregl-ctrl-attrib.maplibregl-compact:after{left:0;top:0}.maplibregl-ctrl-bottom-left>.maplibregl-ctrl-attrib.maplibregl-compact:after{bottom:0;left:0}}@media screen and (forced-colors:active){.maplibregl-ctrl-attrib.maplibregl-compact:after{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23fff' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E")}}@media screen and (forced-colors:active) and (prefers-color-scheme:light){.maplibregl-ctrl-attrib.maplibregl-compact:after{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill-rule='evenodd' viewBox='0 0 20 20'%3E%3Cpath d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E")}}.maplibregl-ctrl-attrib a{color:rgba(0,0,0,.75);text-decoration:none}.maplibregl-ctrl-attrib a:hover{color:inherit;text-decoration:underline}.maplibregl-attrib-empty{display:none}.maplibregl-ctrl-scale{background-color:hsla(0,0%,100%,.75);border:2px solid #333;border-top:#333;box-sizing:border-box;color:#333;font-size:10px;padding:0 5px}.maplibregl-popup{display:flex;left:0;pointer-events:none;position:absolute;top:0;will-change:transform}.maplibregl-popup-anchor-top,.maplibregl-popup-anchor-top-left,.maplibregl-popup-anchor-top-right{flex-direction:column}.maplibregl-popup-anchor-bottom,.maplibregl-popup-anchor-bottom-left,.maplibregl-popup-anchor-bottom-right{flex-direction:column-reverse}.maplibregl-popup-anchor-left{flex-direction:row}.maplibregl-popup-anchor-right{flex-direction:row-reverse}.maplibregl-popup-tip{border:10px solid transparent;height:0;width:0;z-index:1}.maplibregl-popup-anchor-top .maplibregl-popup-tip{align-self:center;border-bottom-color:#fff;border-top:none}.maplibregl-popup-anchor-top-left .maplibregl-popup-tip{align-self:flex-start;border-bottom-color:#fff;border-left:none;border-top:none}.maplibregl-popup-anchor-top-right .maplibregl-popup-tip{align-self:flex-end;border-bottom-color:#fff;border-right:none;border-top:none}.maplibregl-popup-anchor-bottom .maplibregl-popup-tip{align-self:center;border-bottom:none;border-top-color:#fff}.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip{align-self:flex-start;border-bottom:none;border-left:none;border-top-color:#fff}.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip{align-self:flex-end;border-bottom:none;border-right:none;border-top-color:#fff}.maplibregl-popup-anchor-left .maplibregl-popup-tip{align-self:center;border-left:none;border-right-color:#fff}.maplibregl-popup-anchor-right .maplibregl-popup-tip{align-self:center;border-left-color:#fff;border-right:none}.maplibregl-popup-close-button{background-color:transparent;border:0;border-radius:0 3px 0 0;cursor:pointer;position:absolute;right:0;top:0}.maplibregl-popup-close-button:hover{background-color:rgb(0 0 0/5%)}.maplibregl-popup-content{background:#fff;border-radius:3px;box-shadow:0 1px 2px rgba(0,0,0,.1);padding:15px 10px;pointer-events:auto;position:relative}.maplibregl-popup-anchor-top-left .maplibregl-popup-content{border-top-left-radius:0}.maplibregl-popup-anchor-top-right .maplibregl-popup-content{border-top-right-radius:0}.maplibregl-popup-anchor-bottom-left .maplibregl-popup-content{border-bottom-left-radius:0}.maplibregl-popup-anchor-bottom-right .maplibregl-popup-content{border-bottom-right-radius:0}.maplibregl-popup-track-pointer{display:none}.maplibregl-popup-track-pointer *{pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.maplibregl-map:hover .maplibregl-popup-track-pointer{display:flex}.maplibregl-map:active .maplibregl-popup-track-pointer{display:none}.maplibregl-marker{left:0;position:absolute;top:0;transition:opacity .2s;will-change:transform}.maplibregl-user-location-dot,.maplibregl-user-location-dot:before{background-color:#1da1f2;border-radius:50%;height:15px;width:15px}.maplibregl-user-location-dot:before{animation:maplibregl-user-location-dot-pulse 2s infinite;content:"";position:absolute}.maplibregl-user-location-dot:after{border:2px solid #fff;border-radius:50%;box-shadow:0 0 3px rgba(0,0,0,.35);box-sizing:border-box;content:"";height:19px;left:-2px;position:absolute;top:-2px;width:19px}@keyframes maplibregl-user-location-dot-pulse{0%{opacity:1;transform:scale(1)}70%{opacity:0;transform:scale(3)}to{opacity:0;transform:scale(1)}}.maplibregl-user-location-dot-stale{background-color:#aaa}.maplibregl-user-location-dot-stale:after{display:none}.maplibregl-user-location-accuracy-circle{background-color:#1da1f233;border-radius:100%;height:1px;width:1px}.maplibregl-crosshair,.maplibregl-crosshair .maplibregl-interactive,.maplibregl-crosshair .maplibregl-interactive:active{cursor:crosshair}.maplibregl-boxzoom{background:#fff;border:2px dotted #202020;height:0;left:0;opacity:.5;position:absolute;top:0;width:0}.maplibregl-cooperative-gesture-screen{align-items:center;background:rgba(0,0,0,.4);color:#fff;display:flex;font-size:1.4em;inset:0;justify-content:center;line-height:1.2;opacity:0;padding:1rem;pointer-events:none;position:absolute;transition:opacity 1s ease 1s;z-index:99999}.maplibregl-cooperative-gesture-screen.maplibregl-show{opacity:1;transition:opacity .05s}.maplibregl-cooperative-gesture-screen .maplibregl-mobile-message{display:none}@media (hover:none),(width <= 480px){.maplibregl-cooperative-gesture-screen .maplibregl-desktop-message{display:none}.maplibregl-cooperative-gesture-screen .maplibregl-mobile-message{display:block}}.maplibregl-pseudo-fullscreen{height:100%!important;left:0!important;position:fixed!important;top:0!important;width:100%!important;z-index:99999}`;
           document.head.appendChild(e);
         }
@@ -22913,724 +22909,244 @@ var Plotly = (() => {
     }
   });
 
-  // node_modules/parse-svg-path/index.js
-  var require_parse_svg_path = __commonJS({
-    "node_modules/parse-svg-path/index.js"(exports, module) {
-      module.exports = parse2;
-      var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
-      var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
-      function parse2(path) {
-        var data = [];
-        path.replace(segment, function(_, command, args) {
-          var type = command.toLowerCase();
-          args = parseValues(args);
-          if (type == "m" && args.length > 2) {
-            data.push([command].concat(args.splice(0, 2)));
-            type = "l";
-            command = command == "m" ? "l" : "L";
-          }
-          while (true) {
-            if (args.length == length[type]) {
-              args.unshift(command);
-              return data.push(args);
-            }
-            if (args.length < length[type]) throw new Error("malformed path data");
-            data.push([command].concat(args.splice(0, length[type])));
-          }
-        });
-        return data;
-      }
-      var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
-      function parseValues(args) {
-        var numbers = args.match(number);
-        return numbers ? numbers.map(Number) : [];
-      }
-    }
-  });
-
   // src/components/drawing/symbol_defs.js
   var require_symbol_defs = __commonJS({
     "src/components/drawing/symbol_defs.js"(exports, module) {
       "use strict";
-      var parseSvgPath = require_parse_svg_path();
-      var round = (
-        // require('@plotly/d3').round;
-        function(x, n) {
-          return n ? Math.round(x * (n = Math.pow(10, n))) / n : Math.round(x);
-        }
-      );
-      var emptyPath = "M0,0Z";
-      var sqrt2 = Math.sqrt(2);
-      var sqrt3 = Math.sqrt(3);
-      var PI = Math.PI;
-      var cos = Math.cos;
-      var sin = Math.sin;
       module.exports = {
         circle: {
-          n: 0,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            var circle = "M" + rs + ",0A" + rs + "," + rs + " 0 1,1 0,-" + rs + "A" + rs + "," + rs + " 0 0,1 " + rs + ",0Z";
-            return standoff ? align(angle, standoff, circle) : circle;
-          }
+          p: "M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z"
         },
         square: {
-          n: 1,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M" + rs + "," + rs + "H-" + rs + "V-" + rs + "H" + rs + "Z");
-          }
+          p: "M20,20H-20V-20H20Z"
         },
         diamond: {
-          n: 2,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rd = round(r * 1.3, 2);
-            return align(angle, standoff, "M" + rd + ",0L0," + rd + "L-" + rd + ",0L0,-" + rd + "Z");
-          }
+          p: "M26,0L0,26L-26,0L0,-26Z"
         },
         cross: {
-          n: 3,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rc = round(r * 0.4, 2);
-            var rc2 = round(r * 1.2, 2);
-            return align(angle, standoff, "M" + rc2 + "," + rc + "H" + rc + "V" + rc2 + "H-" + rc + "V" + rc + "H-" + rc2 + "V-" + rc + "H-" + rc + "V-" + rc2 + "H" + rc + "V-" + rc + "H" + rc2 + "Z");
-          }
+          p: "M24,8H8V24H-8V8H-24V-8H-8V-24H8V-8H24Z"
         },
         x: {
-          n: 4,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r * 0.8 / sqrt2, 2);
-            var ne = "l" + rx + "," + rx;
-            var se = "l" + rx + ",-" + rx;
-            var sw = "l-" + rx + ",-" + rx;
-            var nw = "l-" + rx + "," + rx;
-            return align(angle, standoff, "M0," + rx + ne + se + sw + se + sw + nw + sw + nw + ne + nw + ne + "Z");
-          }
+          p: "M0,11l11,11l11,-11l-11,-11l11,-11l-11,-11l-11,11l-11,-11l-11,11l11,11l-11,11l11,11Z"
         },
         "triangle-up": {
-          n: 5,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rt = round(r * 2 / sqrt3, 2);
-            var r2 = round(r / 2, 2);
-            var rs = round(r, 2);
-            return align(angle, standoff, "M-" + rt + "," + r2 + "H" + rt + "L0,-" + rs + "Z");
-          }
+          p: "M-23,10H23L0,-20Z"
         },
         "triangle-down": {
-          n: 6,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rt = round(r * 2 / sqrt3, 2);
-            var r2 = round(r / 2, 2);
-            var rs = round(r, 2);
-            return align(angle, standoff, "M-" + rt + ",-" + r2 + "H" + rt + "L0," + rs + "Z");
-          }
+          p: "M-23,-10H23L0,20Z"
         },
         "triangle-left": {
-          n: 7,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rt = round(r * 2 / sqrt3, 2);
-            var r2 = round(r / 2, 2);
-            var rs = round(r, 2);
-            return align(angle, standoff, "M" + r2 + ",-" + rt + "V" + rt + "L-" + rs + ",0Z");
-          }
+          p: "M10,-23V23L-20,0Z"
         },
         "triangle-right": {
-          n: 8,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rt = round(r * 2 / sqrt3, 2);
-            var r2 = round(r / 2, 2);
-            var rs = round(r, 2);
-            return align(angle, standoff, "M-" + r2 + ",-" + rt + "V" + rt + "L" + rs + ",0Z");
-          }
+          p: "M-10,-23V23L20,0Z"
         },
         "triangle-ne": {
-          n: 9,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var r1 = round(r * 0.6, 2);
-            var r2 = round(r * 1.2, 2);
-            return align(angle, standoff, "M-" + r2 + ",-" + r1 + "H" + r1 + "V" + r2 + "Z");
-          }
+          p: "M-24,-12H12V24Z"
         },
         "triangle-se": {
-          n: 10,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var r1 = round(r * 0.6, 2);
-            var r2 = round(r * 1.2, 2);
-            return align(angle, standoff, "M" + r1 + ",-" + r2 + "V" + r1 + "H-" + r2 + "Z");
-          }
+          p: "M12,-24V12H-24Z"
         },
         "triangle-sw": {
-          n: 11,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var r1 = round(r * 0.6, 2);
-            var r2 = round(r * 1.2, 2);
-            return align(angle, standoff, "M" + r2 + "," + r1 + "H-" + r1 + "V-" + r2 + "Z");
-          }
+          p: "M24,12H-12V-24Z"
         },
         "triangle-nw": {
-          n: 12,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var r1 = round(r * 0.6, 2);
-            var r2 = round(r * 1.2, 2);
-            return align(angle, standoff, "M-" + r1 + "," + r2 + "V-" + r1 + "H" + r2 + "Z");
-          }
+          p: "M-12,24V-12H24Z"
         },
         pentagon: {
-          n: 13,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x1 = round(r * 0.951, 2);
-            var x2 = round(r * 0.588, 2);
-            var y0 = round(-r, 2);
-            var y1 = round(r * -0.309, 2);
-            var y2 = round(r * 0.809, 2);
-            return align(angle, standoff, "M" + x1 + "," + y1 + "L" + x2 + "," + y2 + "H-" + x2 + "L-" + x1 + "," + y1 + "L0," + y0 + "Z");
-          }
+          p: "M19,-6L12,16H-12L-19,-6L0,-20Z"
         },
         hexagon: {
-          n: 14,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var y0 = round(r, 2);
-            var y1 = round(r / 2, 2);
-            var x = round(r * sqrt3 / 2, 2);
-            return align(angle, standoff, "M" + x + ",-" + y1 + "V" + y1 + "L0," + y0 + "L-" + x + "," + y1 + "V-" + y1 + "L0,-" + y0 + "Z");
-          }
+          p: "M17,-10V10L0,20L-17,10V-10L0,-20Z"
         },
         hexagon2: {
-          n: 15,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x0 = round(r, 2);
-            var x1 = round(r / 2, 2);
-            var y = round(r * sqrt3 / 2, 2);
-            return align(angle, standoff, "M-" + x1 + "," + y + "H" + x1 + "L" + x0 + ",0L" + x1 + ",-" + y + "H-" + x1 + "L-" + x0 + ",0Z");
-          }
+          p: "M-10,17H10L20,0L10,-17H-10L-20,0Z"
         },
         octagon: {
-          n: 16,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var a = round(r * 0.924, 2);
-            var b = round(r * 0.383, 2);
-            return align(angle, standoff, "M-" + b + ",-" + a + "H" + b + "L" + a + ",-" + b + "V" + b + "L" + b + "," + a + "H-" + b + "L-" + a + "," + b + "V-" + b + "Z");
-          }
+          p: "M-8,-18H8L18,-8V8L8,18H-8L-18,8V-8Z"
         },
         star: {
-          n: 17,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = r * 1.4;
-            var x1 = round(rs * 0.225, 2);
-            var x2 = round(rs * 0.951, 2);
-            var x3 = round(rs * 0.363, 2);
-            var x4 = round(rs * 0.588, 2);
-            var y0 = round(-rs, 2);
-            var y1 = round(rs * -0.309, 2);
-            var y3 = round(rs * 0.118, 2);
-            var y4 = round(rs * 0.809, 2);
-            var y5 = round(rs * 0.382, 2);
-            return align(angle, standoff, "M" + x1 + "," + y1 + "H" + x2 + "L" + x3 + "," + y3 + "L" + x4 + "," + y4 + "L0," + y5 + "L-" + x4 + "," + y4 + "L-" + x3 + "," + y3 + "L-" + x2 + "," + y1 + "H-" + x1 + "L0," + y0 + "Z");
-          }
+          p: "M6,-9H27L10,3L16,23L0,11L-16,23L-10,3L-27,-9H-6L0,-28Z"
         },
         hexagram: {
-          n: 18,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var y = round(r * 0.66, 2);
-            var x1 = round(r * 0.38, 2);
-            var x2 = round(r * 0.76, 2);
-            return align(angle, standoff, "M-" + x2 + ",0l-" + x1 + ",-" + y + "h" + x2 + "l" + x1 + ",-" + y + "l" + x1 + "," + y + "h" + x2 + "l-" + x1 + "," + y + "l" + x1 + "," + y + "h-" + x2 + "l-" + x1 + "," + y + "l-" + x1 + ",-" + y + "h-" + x2 + "Z");
-          }
+          p: "M-15,0l-8,-13h15l8,-13l8,13h15l-8,13l8,13h-15l-8,13l-8,-13h-15Z"
         },
         "star-triangle-up": {
-          n: 19,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * sqrt3 * 0.8, 2);
-            var y1 = round(r * 0.8, 2);
-            var y2 = round(r * 1.6, 2);
-            var rc = round(r * 4, 2);
-            var aPart = "A " + rc + "," + rc + " 0 0 1 ";
-            return align(angle, standoff, "M-" + x + "," + y1 + aPart + x + "," + y1 + aPart + "0,-" + y2 + aPart + "-" + x + "," + y1 + "Z");
-          }
+          p: "M-28,16A80,80 0 0 1 28,16A80,80 0 0 1 0,-32A80,80 0 0 1 -28,16Z"
         },
         "star-triangle-down": {
-          n: 20,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * sqrt3 * 0.8, 2);
-            var y1 = round(r * 0.8, 2);
-            var y2 = round(r * 1.6, 2);
-            var rc = round(r * 4, 2);
-            var aPart = "A " + rc + "," + rc + " 0 0 1 ";
-            return align(angle, standoff, "M" + x + ",-" + y1 + aPart + "-" + x + ",-" + y1 + aPart + "0," + y2 + aPart + x + ",-" + y1 + "Z");
-          }
+          p: "M28,-16A80,80 0 0 1 -28,-16A80,80 0 0 1 0,32A80,80 0 0 1 28,-16Z"
         },
         "star-square": {
-          n: 21,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rp = round(r * 1.1, 2);
-            var rc = round(r * 2, 2);
-            var aPart = "A " + rc + "," + rc + " 0 0 1 ";
-            return align(angle, standoff, "M-" + rp + ",-" + rp + aPart + "-" + rp + "," + rp + aPart + rp + "," + rp + aPart + rp + ",-" + rp + aPart + "-" + rp + ",-" + rp + "Z");
-          }
+          p: "M-22,-22A40,40 0 0 1 -22,22A40,40 0 0 1 22,22A40,40 0 0 1 22,-22A40,40 0 0 1 -22,-22Z"
         },
         "star-diamond": {
-          n: 22,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rp = round(r * 1.4, 2);
-            var rc = round(r * 1.9, 2);
-            var aPart = "A " + rc + "," + rc + " 0 0 1 ";
-            return align(angle, standoff, "M-" + rp + ",0" + aPart + "0," + rp + aPart + rp + ",0" + aPart + "0,-" + rp + aPart + "-" + rp + ",0Z");
-          }
+          p: "M-28,0A38,38 0 0 1 0,28A38,38 0 0 1 28,0A38,38 0 0 1 0,-28A38,38 0 0 1 -28,0Z"
         },
         "diamond-tall": {
-          n: 23,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * 0.7, 2);
-            var y = round(r * 1.4, 2);
-            return align(angle, standoff, "M0," + y + "L" + x + ",0L0,-" + y + "L-" + x + ",0Z");
-          }
+          p: "M0,28L14,0L0,-28L-14,0Z"
         },
         "diamond-wide": {
-          n: 24,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * 1.4, 2);
-            var y = round(r * 0.7, 2);
-            return align(angle, standoff, "M0," + y + "L" + x + ",0L0,-" + y + "L-" + x + ",0Z");
-          }
+          p: "M0,14L28,0L0,-14L-28,0Z"
         },
         hourglass: {
-          n: 25,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M" + rs + "," + rs + "H-" + rs + "L" + rs + ",-" + rs + "H-" + rs + "Z");
-          },
+          p: "M20,20H-20L20,-20H-20Z",
           noDot: true
         },
         bowtie: {
-          n: 26,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M" + rs + "," + rs + "V-" + rs + "L-" + rs + "," + rs + "V-" + rs + "Z");
-          },
+          p: "M20,20V-20L-20,20V-20Z",
           noDot: true
         },
         "circle-cross": {
-          n: 27,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M0," + rs + "V-" + rs + "M" + rs + ",0H-" + rs + "M" + rs + ",0A" + rs + "," + rs + " 0 1,1 0,-" + rs + "A" + rs + "," + rs + " 0 0,1 " + rs + ",0Z");
-          },
+          p: "M0,20V-20M20,0H-20M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z",
           needLine: true,
           noDot: true
         },
         "circle-x": {
-          n: 28,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            var rc = round(r / sqrt2, 2);
-            return align(angle, standoff, "M" + rc + "," + rc + "L-" + rc + ",-" + rc + "M" + rc + ",-" + rc + "L-" + rc + "," + rc + "M" + rs + ",0A" + rs + "," + rs + " 0 1,1 0,-" + rs + "A" + rs + "," + rs + " 0 0,1 " + rs + ",0Z");
-          },
+          p: "M14,14L-14,-14M14,-14L-14,14M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z",
           needLine: true,
           noDot: true
         },
         "square-cross": {
-          n: 29,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M0," + rs + "V-" + rs + "M" + rs + ",0H-" + rs + "M" + rs + "," + rs + "H-" + rs + "V-" + rs + "H" + rs + "Z");
-          },
+          p: "M0,20V-20M20,0H-20M20,20H-20V-20H20Z",
           needLine: true,
           noDot: true
         },
         "square-x": {
-          n: 30,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rs = round(r, 2);
-            return align(angle, standoff, "M" + rs + "," + rs + "L-" + rs + ",-" + rs + "M" + rs + ",-" + rs + "L-" + rs + "," + rs + "M" + rs + "," + rs + "H-" + rs + "V-" + rs + "H" + rs + "Z");
-          },
+          p: "M20,20L-20,-20M20,-20L-20,20M20,20H-20V-20H20Z",
           needLine: true,
           noDot: true
         },
         "diamond-cross": {
-          n: 31,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rd = round(r * 1.3, 2);
-            return align(angle, standoff, "M" + rd + ",0L0," + rd + "L-" + rd + ",0L0,-" + rd + "ZM0,-" + rd + "V" + rd + "M-" + rd + ",0H" + rd);
-          },
+          p: "M26,0L0,26L-26,0L0,-26ZM0,-26V26M-26,0H26",
           needLine: true,
           noDot: true
         },
         "diamond-x": {
-          n: 32,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rd = round(r * 1.3, 2);
-            var r2 = round(r * 0.65, 2);
-            return align(angle, standoff, "M" + rd + ",0L0," + rd + "L-" + rd + ",0L0,-" + rd + "ZM-" + r2 + ",-" + r2 + "L" + r2 + "," + r2 + "M-" + r2 + "," + r2 + "L" + r2 + ",-" + r2);
-          },
+          p: "M26,0L0,26L-26,0L0,-26ZM-13,-13L13,13M-13,13L13,-13",
           needLine: true,
           noDot: true
         },
         "cross-thin": {
-          n: 33,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rc = round(r * 1.4, 2);
-            return align(angle, standoff, "M0," + rc + "V-" + rc + "M" + rc + ",0H-" + rc);
-          },
+          p: "M0,28V-28M28,0H-28",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "x-thin": {
-          n: 34,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            return align(angle, standoff, "M" + rx + "," + rx + "L-" + rx + ",-" + rx + "M" + rx + ",-" + rx + "L-" + rx + "," + rx);
-          },
+          p: "M20,20L-20,-20M20,-20L-20,20",
           needLine: true,
           noDot: true,
           noFill: true
         },
         asterisk: {
-          n: 35,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rc = round(r * 1.2, 2);
-            var rs = round(r * 0.85, 2);
-            return align(angle, standoff, "M0," + rc + "V-" + rc + "M" + rc + ",0H-" + rc + "M" + rs + "," + rs + "L-" + rs + ",-" + rs + "M" + rs + ",-" + rs + "L-" + rs + "," + rs);
-          },
+          p: "M0,24V-24M24,0H-24M17,17L-17,-17M17,-17L-17,17",
           needLine: true,
           noDot: true,
           noFill: true
         },
         hash: {
-          n: 36,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var r1 = round(r / 2, 2);
-            var r2 = round(r, 2);
-            return align(angle, standoff, "M" + r1 + "," + r2 + "V-" + r2 + "M" + (r1 - r2) + ",-" + r2 + "V" + r2 + "M" + r2 + "," + r1 + "H-" + r2 + "M-" + r2 + "," + (r1 - r2) + "H" + r2);
-          },
+          p: "M10,20V-20M-10,-20V20M20,10H-20M-20,-10H20",
           needLine: true,
           noFill: true
         },
         "y-up": {
-          n: 37,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * 1.2, 2);
-            var y0 = round(r * 1.6, 2);
-            var y1 = round(r * 0.8, 2);
-            return align(angle, standoff, "M-" + x + "," + y1 + "L0,0M" + x + "," + y1 + "L0,0M0,-" + y0 + "L0,0");
-          },
+          p: "M-24,16L0,0M24,16L0,0M0,-32L0,0",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "y-down": {
-          n: 38,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var x = round(r * 1.2, 2);
-            var y0 = round(r * 1.6, 2);
-            var y1 = round(r * 0.8, 2);
-            return align(angle, standoff, "M-" + x + ",-" + y1 + "L0,0M" + x + ",-" + y1 + "L0,0M0," + y0 + "L0,0");
-          },
+          p: "M-24,-16L0,0M24,-16L0,0M0,32L0,0",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "y-left": {
-          n: 39,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var y = round(r * 1.2, 2);
-            var x0 = round(r * 1.6, 2);
-            var x1 = round(r * 0.8, 2);
-            return align(angle, standoff, "M" + x1 + "," + y + "L0,0M" + x1 + ",-" + y + "L0,0M-" + x0 + ",0L0,0");
-          },
+          p: "M16,24L0,0M16,-24L0,0M-32,0L0,0",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "y-right": {
-          n: 40,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var y = round(r * 1.2, 2);
-            var x0 = round(r * 1.6, 2);
-            var x1 = round(r * 0.8, 2);
-            return align(angle, standoff, "M-" + x1 + "," + y + "L0,0M-" + x1 + ",-" + y + "L0,0M" + x0 + ",0L0,0");
-          },
+          p: "M-16,24L0,0M-16,-24L0,0M32,0L0,0",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "line-ew": {
-          n: 41,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rc = round(r * 1.4, 2);
-            return align(angle, standoff, "M" + rc + ",0H-" + rc);
-          },
+          p: "M28,0H-28",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "line-ns": {
-          n: 42,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rc = round(r * 1.4, 2);
-            return align(angle, standoff, "M0," + rc + "V-" + rc);
-          },
+          p: "M0,28V-28",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "line-ne": {
-          n: 43,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            return align(angle, standoff, "M" + rx + ",-" + rx + "L-" + rx + "," + rx);
-          },
+          p: "M20,-20L-20,20",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "line-nw": {
-          n: 44,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            return align(angle, standoff, "M" + rx + "," + rx + "L-" + rx + ",-" + rx);
-          },
+          p: "M20,20L-20,-20",
           needLine: true,
           noDot: true,
           noFill: true
         },
         "arrow-up": {
-          n: 45,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            var ry = round(r * 2, 2);
-            return align(angle, standoff, "M0,0L-" + rx + "," + ry + "H" + rx + "Z");
-          },
+          p: "M0,0L-20,40H20Z",
           backoff: 1,
           noDot: true
         },
         "arrow-down": {
-          n: 46,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            var ry = round(r * 2, 2);
-            return align(angle, standoff, "M0,0L-" + rx + ",-" + ry + "H" + rx + "Z");
-          },
+          p: "M0,0L-20,-40H20Z",
           noDot: true
         },
         "arrow-left": {
-          n: 47,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r * 2, 2);
-            var ry = round(r, 2);
-            return align(angle, standoff, "M0,0L" + rx + ",-" + ry + "V" + ry + "Z");
-          },
+          p: "M0,0L40,-20V20Z",
           noDot: true
         },
         "arrow-right": {
-          n: 48,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r * 2, 2);
-            var ry = round(r, 2);
-            return align(angle, standoff, "M0,0L-" + rx + ",-" + ry + "V" + ry + "Z");
-          },
+          p: "M0,0L-40,-20V20Z",
           noDot: true
         },
         "arrow-bar-up": {
-          n: 49,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            var ry = round(r * 2, 2);
-            return align(angle, standoff, "M-" + rx + ",0H" + rx + "M0,0L-" + rx + "," + ry + "H" + rx + "Z");
-          },
+          p: "M-20,0H20M0,0L-20,40H20Z",
           backoff: 1,
           needLine: true,
           noDot: true
         },
         "arrow-bar-down": {
-          n: 50,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r, 2);
-            var ry = round(r * 2, 2);
-            return align(angle, standoff, "M-" + rx + ",0H" + rx + "M0,0L-" + rx + ",-" + ry + "H" + rx + "Z");
-          },
+          p: "M-20,0H20M0,0L-20,-40H20Z",
           needLine: true,
           noDot: true
         },
         "arrow-bar-left": {
-          n: 51,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r * 2, 2);
-            var ry = round(r, 2);
-            return align(angle, standoff, "M0,-" + ry + "V" + ry + "M0,0L" + rx + ",-" + ry + "V" + ry + "Z");
-          },
+          p: "M0,-20V20M0,0L40,-20V20Z",
           needLine: true,
           noDot: true
         },
         "arrow-bar-right": {
-          n: 52,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var rx = round(r * 2, 2);
-            var ry = round(r, 2);
-            return align(angle, standoff, "M0,-" + ry + "V" + ry + "M0,0L-" + rx + ",-" + ry + "V" + ry + "Z");
-          },
+          p: "M0,-20V20M0,0L-40,-20V20Z",
           needLine: true,
           noDot: true
         },
         arrow: {
-          n: 53,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var headAngle = PI / 2.5;
-            var x = 2 * r * cos(headAngle);
-            var y = 2 * r * sin(headAngle);
-            return align(
-              angle,
-              standoff,
-              "M0,0L" + -x + "," + y + "L" + x + "," + y + "Z"
-            );
-          },
+          p: "M0,0L-12,38L12,38Z",
           backoff: 0.9,
           noDot: true
         },
         "arrow-wide": {
-          n: 54,
-          f: function(r, angle, standoff) {
-            if (skipAngle(angle)) return emptyPath;
-            var headAngle = PI / 4;
-            var x = 2 * r * cos(headAngle);
-            var y = 2 * r * sin(headAngle);
-            return align(
-              angle,
-              standoff,
-              "M0,0L" + -x + "," + y + "A " + 2 * r + "," + 2 * r + " 0 0 1 " + x + "," + y + "Z"
-            );
-          },
+          p: "M0,0L-28,28A40,40 0 0 1 28,28Z",
           backoff: 0.4,
           noDot: true
         }
       };
-      function skipAngle(angle) {
-        return angle === null;
-      }
-      var lastPathIn;
-      var lastPathOut;
-      var lastAngle;
-      var lastStandoff;
-      function align(angle, standoff, path) {
-        if ((!angle || angle % 360 === 0) && !standoff) return path;
-        if (lastAngle === angle && lastStandoff === standoff && lastPathIn === path) return lastPathOut;
-        lastAngle = angle;
-        lastStandoff = standoff;
-        lastPathIn = path;
-        function rotate(t4, xy) {
-          var cosT = cos(t4);
-          var sinT = sin(t4);
-          var x2 = xy[0];
-          var y2 = xy[1] + (standoff || 0);
-          return [
-            x2 * cosT - y2 * sinT,
-            x2 * sinT + y2 * cosT
-          ];
-        }
-        var t = angle / 180 * PI;
-        var x = 0;
-        var y = 0;
-        var cmd = parseSvgPath(path);
-        var str = "";
-        for (var i = 0; i < cmd.length; i++) {
-          var cmdI = cmd[i];
-          var op = cmdI[0];
-          var x0 = x;
-          var y0 = y;
-          if (op === "M" || op === "L") {
-            x = +cmdI[1];
-            y = +cmdI[2];
-          } else if (op === "m" || op === "l") {
-            x += +cmdI[1];
-            y += +cmdI[2];
-          } else if (op === "H") {
-            x = +cmdI[1];
-          } else if (op === "h") {
-            x += +cmdI[1];
-          } else if (op === "V") {
-            y = +cmdI[1];
-          } else if (op === "v") {
-            y += +cmdI[1];
-          } else if (op === "A") {
-            x = +cmdI[1];
-            y = +cmdI[2];
-            var E2 = rotate(t, [+cmdI[6], +cmdI[7]]);
-            cmdI[6] = E2[0];
-            cmdI[7] = E2[1];
-            cmdI[3] = +cmdI[3] + angle;
-          }
-          if (op === "H" || op === "V") op = "L";
-          if (op === "h" || op === "v") op = "l";
-          if (op === "m" || op === "l") {
-            x -= x0;
-            y -= y0;
-          }
-          var B2 = rotate(t, [x, y]);
-          if (op === "H" || op === "V") op = "L";
-          if (op === "M" || op === "L" || op === "m" || op === "l") {
-            cmdI[1] = B2[0];
-            cmdI[2] = B2[1];
-          }
-          cmdI[0] = op;
-          str += cmdI[0] + cmdI.slice(1).join(",");
-        }
-        lastPathOut = str;
-        return str;
-      }
     }
   });
 
@@ -23710,6 +23226,14 @@ var Plotly = (() => {
         if (isNumeric(x) && isNumeric(y) && sel.node()) {
           if (sel.node().nodeName === "text") {
             sel.attr("x", x).attr("y", y);
+          } else if (sel.node().nodeName === "use") {
+            var node = sel.node();
+            var scale = node.getAttribute("data-scale");
+            var rot = node.getAttribute("data-rot");
+            var t = strTranslate(x, y);
+            if (rot) t += " " + rot;
+            if (scale) t += " scale(" + scale + ")";
+            sel.attr("transform", t);
           } else {
             sel.attr("transform", strTranslate(x, y));
           }
@@ -23880,15 +23404,16 @@ var Plotly = (() => {
       };
       var SYMBOLDEFS = require_symbol_defs();
       drawing.symbolNames = [];
-      drawing.symbolFuncs = [];
+      drawing.symbolPaths = [];
       drawing.symbolBackOffs = [];
       drawing.symbolNeedLines = {};
       drawing.symbolNoDot = {};
       drawing.symbolNoFill = {};
       drawing.symbolList = [];
+      var _n = 0;
       Object.keys(SYMBOLDEFS).forEach(function(k) {
         var symDef = SYMBOLDEFS[k];
-        var n = symDef.n;
+        var n = _n++;
         drawing.symbolList.push(
           n,
           String(n),
@@ -23898,7 +23423,7 @@ var Plotly = (() => {
           k + "-open"
         );
         drawing.symbolNames[n] = k;
-        drawing.symbolFuncs[n] = symDef.f;
+        drawing.symbolPaths[n] = symDef.p;
         drawing.symbolBackOffs[n] = symDef.backoff || 0;
         if (symDef.needLine) {
           drawing.symbolNeedLines[n] = true;
@@ -23921,30 +23446,80 @@ var Plotly = (() => {
       });
       var MAXSYMBOL = drawing.symbolNames.length;
       var DOTPATH = "M0,0.5L0.5,0L0,-0.5L-0.5,0Z";
-      drawing.symbolNumber = function(v) {
+      drawing.symbolDotPath = DOTPATH;
+      drawing.lookupSymbol = function(v) {
+        if (typeof v === "string" && /^[Mm]/.test(v)) {
+          return { path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
+        }
+        var name2, open = false, dot = false, idx;
         if (isNumeric(v)) {
-          v = +v;
+          var n = Math.floor(Math.max(+v, 0));
+          if (n >= 400) return null;
+          open = n % 200 >= 100;
+          dot = n >= 200;
+          idx = n % 100;
+          if (idx >= MAXSYMBOL) return null;
+          name2 = drawing.symbolNames[idx];
         } else if (typeof v === "string") {
-          var vbase = 0;
           if (v.indexOf("-open") > 0) {
-            vbase = 100;
+            open = true;
             v = v.replace("-open", "");
           }
           if (v.indexOf("-dot") > 0) {
-            vbase += 200;
+            dot = true;
             v = v.replace("-dot", "");
           }
-          v = drawing.symbolNames.indexOf(v);
-          if (v >= 0) {
-            v += vbase;
-          }
+          idx = drawing.symbolNames.indexOf(v);
+          if (idx < 0) return null;
+          name2 = v;
+        } else {
+          return null;
         }
-        return v % 100 >= MAXSYMBOL || v >= 400 ? 0 : Math.floor(Math.max(v, 0));
+        return {
+          name: name2,
+          path: drawing.symbolPaths[idx],
+          open,
+          dot,
+          backoff: drawing.symbolBackOffs[idx] || 0,
+          noDot: !!drawing.symbolNoDot[idx],
+          noFill: !!drawing.symbolNoFill[idx]
+        };
       };
-      function makePointPath(symbolNumber, r, t, s) {
-        var base = symbolNumber % 100;
-        return drawing.symbolFuncs[base](r, t, s) + (symbolNumber >= 200 ? DOTPATH : "");
-      }
+      drawing.symbolNumber = function(v) {
+        var sym = drawing.lookupSymbol(v);
+        if (!sym || !sym.name) return 0;
+        var idx = drawing.symbolNames.indexOf(sym.name);
+        return idx + (sym.open ? 100 : 0) + (sym.dot ? 200 : 0);
+      };
+      drawing.ensureSymbolDef = function(gd, sym) {
+        var defs = gd._fullLayout._defs;
+        var id;
+        if (!sym.name) {
+          var customMap = gd._fullLayout._customSymPaths || (gd._fullLayout._customSymPaths = {});
+          if (!customMap[sym.path]) {
+            customMap[sym.path] = "plotly-sym-c" + Object.keys(customMap).length;
+          }
+          id = customMap[sym.path];
+          if (defs.select("#" + id).empty()) {
+            defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
+          }
+          return id;
+        }
+        id = "plotly-sym-" + sym.name;
+        if (defs.select("#" + id).empty()) {
+          defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
+        }
+        if (sym.dot) {
+          var dotId = id + "-dot";
+          if (defs.select("#" + dotId).empty()) {
+            var dotSym = defs.append("symbol").attr("id", dotId).attr("overflow", "visible");
+            dotSym.append("path").attr("d", sym.path);
+            dotSym.append("path").attr("d", DOTPATH);
+          }
+          return dotId;
+        }
+        return id;
+      };
       var stopFormatter = numberFormat("~f");
       var gradientInfo = {
         radial: { type: "radial" },
@@ -24229,11 +23804,24 @@ var Plotly = (() => {
           if (fns.selectedSizeFn) {
             r = d.mrc = fns.selectedSizeFn(d);
           }
-          var x = drawing.symbolNumber(d.mx || marker.symbol) || 0;
-          d.om = x % 200 >= 100;
+          var symbolValue = d.mx || marker.symbol;
+          var sym = drawing.lookupSymbol(symbolValue) || drawing.lookupSymbol(0);
+          d.om = sym.open;
           var angle = getMarkerAngle(d, trace);
           var standoff = getMarkerStandoff(d, trace);
-          sel.attr("d", makePointPath(x, r, angle, standoff));
+          var scale = r / 20;
+          var rot = "";
+          if (angle) rot += "rotate(" + angle + ")";
+          if (standoff) rot += (rot ? " " : "") + "translate(0," + standoff + ")";
+          sel.attr("href", "#" + drawing.ensureSymbolDef(gd, sym)).attr("data-scale", scale).attr("data-rot", rot || null);
+          var node = sel.node();
+          var curT = node ? node.getAttribute("transform") || "" : "";
+          var tPart = curT.match(/^translate\([^)]*\)/);
+          var newT = tPart ? tPart[0] : "";
+          if (rot) newT += " " + rot;
+          newT += " scale(" + scale + ")";
+          sel.attr("transform", newT.trim());
+          sel.style("vector-effect", gd._context.staticPlot ? "none" : "non-scaling-stroke");
         }
         var perPointGradient = false;
         var fillColor, lineColor, lineWidth;
@@ -24440,12 +24028,16 @@ var Plotly = (() => {
         }
         if (fns.selectedSizeFn) {
           seq.push(function(pt, d) {
-            var mx = d.mx || marker.symbol || 0;
             var mrc2 = fns.selectedSizeFn(d);
-            pt.attr(
-              "d",
-              makePointPath(drawing.symbolNumber(mx), mrc2, getMarkerAngle(d, trace), getMarkerStandoff(d, trace))
-            );
+            var scale = mrc2 / 20;
+            var node = pt.node();
+            var rot = node ? node.getAttribute("data-rot") || "" : "";
+            var curT = node ? node.getAttribute("transform") || "" : "";
+            var tPart = curT.match(/^translate\([^)]*\)/);
+            var newT = tPart ? tPart[0] : "";
+            if (rot) newT += " " + rot;
+            newT += " scale(" + scale + ")";
+            pt.attr("data-scale", scale).attr("transform", newT.trim());
             d.mrc2 = mrc2;
           });
         }
@@ -24670,7 +24262,7 @@ var Plotly = (() => {
             if (Lib.isArrayOrTypedArray(endMarkerSymbol)) endMarkerSymbol = endMarkerSymbol[endI];
             var endMarkerSize = endMarker.size;
             if (Lib.isArrayOrTypedArray(endMarkerSize)) endMarkerSize = endMarkerSize[endI];
-            b = endMarker ? drawing.symbolBackOffs[drawing.symbolNumber(endMarkerSymbol)] * endMarkerSize : 0;
+            b = endMarker ? ((drawing.lookupSymbol(endMarkerSymbol) || {}).backoff || 0) * endMarkerSize : 0;
             b += drawing.getMarkerStandoff(d[endI], trace) || 0;
           }
           var x = x2 - b * Math.cos(t);
@@ -31178,8 +30770,8 @@ var Plotly = (() => {
             tMod.texttemplate = null;
           }
           var ptgroup = d3.select(this).select("g.legendpoints");
-          var pts = ptgroup.selectAll("path.scatterpts").data(showMarker ? dMod : []);
-          pts.enter().insert("path", ":first-child").classed("scatterpts", true).attr("transform", centerTransform);
+          var pts = ptgroup.selectAll("use.scatterpts").data(showMarker ? dMod : []);
+          pts.enter().insert("use", ":first-child").classed("scatterpts", true).attr("transform", centerTransform);
           pts.exit().remove();
           pts.call(Drawing.pointStyle, tMod, gd);
           if (showMarker) dMod[0].mrc = 3;
@@ -34629,6 +34221,41 @@ var Plotly = (() => {
           ].join("")
         }
       };
+    }
+  });
+
+  // node_modules/parse-svg-path/index.js
+  var require_parse_svg_path = __commonJS({
+    "node_modules/parse-svg-path/index.js"(exports, module) {
+      module.exports = parse2;
+      var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
+      var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+      function parse2(path) {
+        var data = [];
+        path.replace(segment, function(_, command, args) {
+          var type = command.toLowerCase();
+          args = parseValues(args);
+          if (type == "m" && args.length > 2) {
+            data.push([command].concat(args.splice(0, 2)));
+            type = "l";
+            command = command == "m" ? "l" : "L";
+          }
+          while (true) {
+            if (args.length == length[type]) {
+              args.unshift(command);
+              return data.push(args);
+            }
+            if (args.length < length[type]) throw new Error("malformed path data");
+            data.push([command].concat(args.splice(0, length[type])));
+          }
+        });
+        return data;
+      }
+      var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+      function parseValues(args) {
+        var numbers = args.match(number);
+        return numbers ? numbers.map(Number) : [];
+      }
     }
   });
 
@@ -50571,9 +50198,9 @@ var Plotly = (() => {
             if (showMarkers) markerFilter = showFilter;
             if (showText) textFilter = showFilter;
           }
-          selection = points2.selectAll("path.point");
+          selection = points2.selectAll("use.point");
           join = selection.data(markerFilter, keyFunc2);
-          var enter = join.enter().append("path").classed("point", true);
+          var enter = join.enter().append("use").classed("point", true);
           if (hasTransition) {
             enter.call(Drawing.pointStyle, trace2, gd).call(Drawing.translatePoints, xa, ya).style("opacity", 0).transition().style("opacity", 1);
           }
@@ -50727,7 +50354,7 @@ var Plotly = (() => {
         Registry.getComponentMethod("errorbars", "style")(s);
       }
       function stylePoints(sel, trace, gd) {
-        Drawing.pointStyle(sel.selectAll("path.point"), trace, gd);
+        Drawing.pointStyle(sel.selectAll("use.point"), trace, gd);
       }
       function styleText(sel, trace, gd) {
         Drawing.textPointStyle(sel.selectAll("text"), trace, gd);
@@ -50735,7 +50362,7 @@ var Plotly = (() => {
       function styleOnSelect(gd, cd, sel) {
         var trace = cd[0].trace;
         if (trace.selectedpoints) {
-          Drawing.selectedPointStyle(sel.selectAll("path.point"), trace);
+          Drawing.selectedPointStyle(sel.selectAll("use.point"), trace);
           Drawing.selectedTextStyle(sel.selectAll("text"), trace);
         } else {
           stylePoints(sel, trace, gd);
@@ -62673,7 +62300,7 @@ var Plotly = (() => {
         var gPoints = sel.selectAll("g.points").data(mode ? fn : []);
         gPoints.enter().append("g").attr("class", "points");
         gPoints.exit().remove();
-        var paths = gPoints.selectAll("path").data(function(d) {
+        var paths = gPoints.selectAll("use").data(function(d) {
           var i;
           var pts = d.pts2;
           var typicalSpread = Math.max((d.max - d.min) / 10, d.q3 - d.q1);
@@ -62725,7 +62352,7 @@ var Plotly = (() => {
           }
           return pts;
         });
-        paths.enter().append("path").classed("point", true);
+        paths.enter().append("use").classed("point", true);
         paths.exit().remove();
         paths.call(Drawing.translatePoints, xa, ya);
       }
@@ -62815,14 +62442,14 @@ var Plotly = (() => {
               "stroke-width": lineWidth,
               "stroke-dasharray": 2 * lineWidth + "px," + lineWidth + "px"
             }).call(Color2.stroke, trace.line.color);
-            var pts = el.selectAll("path.point");
+            var pts = el.selectAll("use.point");
             Drawing.pointStyle(pts, trace, gd);
           }
         });
       }
       function styleOnSelect(gd, cd, sel) {
         var trace = cd[0].trace;
-        var pts = sel.selectAll("path.point");
+        var pts = sel.selectAll("use.point");
         if (trace.selectedpoints) {
           Drawing.selectedPointStyle(pts, trace);
         } else {
@@ -134318,7 +133945,7 @@ var Plotly = (() => {
             s.selectAll("path.js-line").data([{ geojson: lineData, trace }]).enter().append("path").classed("js-line", true).style("stroke-miterlimit", 2);
           }
           if (subTypes.hasMarkers(trace)) {
-            s.selectAll("path.point").data(Lib.identity).enter().append("path").classed("point", true).each(function(calcPt) {
+            s.selectAll("use.point").data(Lib.identity).enter().append("use").classed("point", true).each(function(calcPt) {
               removeBADNUM(calcPt, this);
             });
           }
@@ -144648,31 +144275,61 @@ var Plotly = (() => {
       var SYMBOL_SIZE = constants.SYMBOL_SIZE;
       var SYMBOL_STROKE = constants.SYMBOL_STROKE;
       var SYMBOL_SDF = {};
-      var SYMBOL_SVG_CIRCLE = Drawing.symbolFuncs[0](SYMBOL_SIZE * 0.05);
+      var SYMBOL_SVG_CIRCLE = "M1,0A1,1 0 1,1 0,-1A1,1 0 0,1 1,0Z";
+      function rotatePath(path, angleDeg) {
+        if (!angleDeg || angleDeg % 360 === 0) return path;
+        var t = angleDeg * Math.PI / 180;
+        var cosT = Math.cos(t);
+        var sinT = Math.sin(t);
+        function rot(x, y) {
+          return [x * cosT - y * sinT, x * sinT + y * cosT];
+        }
+        return path.replace(/([MLHVAZmlhva])([^MLHVAZmlhva]*)/g, function(_, op, args) {
+          var nums = args.trim() ? args.trim().split(/[\s,]+/).map(Number) : [];
+          var u = op.toUpperCase();
+          if (u === "Z") return op;
+          if (u === "M" || u === "L") {
+            var p = rot(nums[0], nums[1]);
+            return op + p[0] + "," + p[1];
+          }
+          if (u === "H") {
+            var ph = rot(nums[0], 0);
+            return "L" + ph[0] + "," + ph[1];
+          }
+          if (u === "V") {
+            var pv = rot(0, nums[0]);
+            return "L" + pv[0] + "," + pv[1];
+          }
+          if (u === "A") {
+            var pa = rot(nums[5], nums[6]);
+            return op + nums[0] + "," + nums[1] + " " + (nums[2] + angleDeg) + " " + nums[3] + " " + nums[4] + " " + pa[0] + "," + pa[1];
+          }
+          return op + args;
+        });
+      }
       function getSymbolSdf(d, trace) {
         var symbol = d.mx;
         if (symbol === "circle") return null;
         var symbolPath, symbolSdf;
-        var symbolNumber = Drawing.symbolNumber(symbol);
-        var symbolFunc = Drawing.symbolFuncs[symbolNumber % 100];
-        var symbolNoDot = !!Drawing.symbolNoDot[symbolNumber % 100];
-        var symbolNoFill = !!Drawing.symbolNoFill[symbolNumber % 100];
+        var sym = Drawing.lookupSymbol(symbol);
         var isDot = helpers.isDotSymbol(symbol);
-        if (d.ma) symbol += "_" + d.ma;
-        if (SYMBOL_SDF[symbol]) return SYMBOL_SDF[symbol];
+        var cacheKey = symbol;
+        if (d.ma) cacheKey += "_" + d.ma;
+        if (SYMBOL_SDF[cacheKey]) return SYMBOL_SDF[cacheKey];
         var angle = Drawing.getMarkerAngle(d, trace);
-        if (isDot && !symbolNoDot) {
-          symbolPath = symbolFunc(SYMBOL_SIZE * 1.1, angle) + SYMBOL_SVG_CIRCLE;
+        var basePath = rotatePath(sym.path, angle);
+        if (isDot && !sym.noDot) {
+          symbolPath = basePath + SYMBOL_SVG_CIRCLE;
         } else {
-          symbolPath = symbolFunc(SYMBOL_SIZE, angle);
+          symbolPath = basePath;
         }
         symbolSdf = svgSdf(symbolPath, {
           w: SYMBOL_SDF_SIZE,
           h: SYMBOL_SDF_SIZE,
           viewBox: [-SYMBOL_SIZE, -SYMBOL_SIZE, SYMBOL_SIZE, SYMBOL_SIZE],
-          stroke: symbolNoFill ? SYMBOL_STROKE : -SYMBOL_STROKE
+          stroke: sym.noFill ? SYMBOL_STROKE : -SYMBOL_STROKE
         });
-        SYMBOL_SDF[symbol] = symbolSdf;
+        SYMBOL_SDF[cacheKey] = symbolSdf;
         return symbolSdf || null;
       }
       function convertLinePositions(gd, trace, positions) {
@@ -266944,7 +266601,3 @@ maplibre-gl/dist/maplibre-gl.js:
    * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt
    *)
 */
-
-window.Plotly = Plotly;
-return Plotly;
-}));
