@@ -1,16 +1,68 @@
 'use strict';
 
 var Plotly = require('../../../lib/index');
+var Drawing = require('../../../src/components/drawing');
 var createGraphDiv = require('../assets/create_graph_div');
 var destroyGraphDiv = require('../assets/destroy_graph_div');
 var d3Select = require('../../strict-d3').select;
 var d3SelectAll = require('../../strict-d3').selectAll;
+
+describe('lookupSymbol .n property', function() {
+    it('matches the legacy numeric input exactly', function() {
+        // The .n property must equal what the user types as symbol:N
+        // so there are zero doubts about a consistent design.
+        var cases = [
+            // numeric inputs
+            {v: 0,   n: 0},
+            {v: 1,   n: 1},
+            {v: 100, n: 100},
+            {v: 101, n: 101},
+            {v: 200, n: 200},
+            {v: 201, n: 201},
+            {v: 300, n: 300},
+            {v: 301, n: 301},
+            // string inputs resolve to the same n as their numeric equivalent
+            {v: 'circle',           n: 0},
+            {v: 'circle-open',      n: 100},
+            {v: 'circle-dot',       n: 200},
+            {v: 'circle-open-dot',  n: 300},
+            {v: 'square',           n: 1},
+            {v: 'square-open',      n: 101},
+            {v: 'square-dot',       n: 201},
+            {v: 'square-open-dot',  n: 301},
+        ];
+        cases.forEach(function(c) {
+            var sym = Drawing.lookupSymbol(c.v);
+            expect(sym).toBeTruthy('lookupSymbol(' + c.v + ') should return a symbol object');
+            expect(sym.n).toBe(c.n, 'lookupSymbol(' + c.v + ').n');
+        });
+    });
+
+    it('open variants share the same SVG path as their closed counterpart', function() {
+        expect(Drawing.lookupSymbol(0).path).toBe(Drawing.lookupSymbol(100).path,
+            'circle and circle-open share path');
+        expect(Drawing.lookupSymbol(200).path).toBe(Drawing.lookupSymbol(300).path,
+            'circle-dot and circle-open-dot share path');
+        expect(Drawing.lookupSymbol(1).path).toBe(Drawing.lookupSymbol(101).path,
+            'square and square-open share path');
+    });
+
+    it('all four variant .n values are distinct for the same base symbol', function() {
+        var ns = [0, 100, 200, 300].map(function(v) { return Drawing.lookupSymbol(v).n; });
+        expect(ns).toEqual([0, 100, 200, 300], 'all four circle variant n values are distinct');
+    });
+});
 
 describe('Marker symbol performance', function() {
     var gd;
 
     beforeEach(function() { gd = createGraphDiv(); });
     afterEach(destroyGraphDiv);
+
+    function getUseHref(useEl) {
+        return useEl.getAttribute('href') ||
+            useEl.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+    }
 
     it('should use <symbol>+<use> with 1 symbol def for 1000 identical markers', function(done) {
         var N = 1000;
@@ -75,12 +127,12 @@ describe('Marker symbol performance', function() {
         }]).then(function() {
             // Capture current <use> href — it shouldn't change on resize
             var firstUse = gd.querySelector('use.point');
-            var hrefBefore = firstUse.getAttribute('href') || firstUse.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+            var hrefBefore = getUseHref(firstUse);
             var scaleBefore = parseFloat(firstUse.getAttribute('data-scale'));
 
             return Plotly.restyle(gd, { 'marker.size': 16 }).then(function() {
                 var firstUseAfter = gd.querySelector('use.point');
-                var hrefAfter = firstUseAfter.getAttribute('href') || firstUseAfter.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+                var hrefAfter = getUseHref(firstUseAfter);
                 var scaleAfter = parseFloat(firstUseAfter.getAttribute('data-scale'));
 
                 expect(hrefAfter).toBe(hrefBefore, 'href unchanged — no new symbol def needed');
@@ -104,11 +156,10 @@ describe('Marker symbol performance', function() {
         }).then(done, done.fail);
     });
 
-    it('symbol:100 (circle-open) should get id "circle" and share 1 <symbol> def with symbol:0', function(done) {
-        // symbol: 100 is the legacy numeric encoding for circle-open.
-        // Both circle (0) and circle-open (100) share the same SVG path; the
-        // open/closed distinction is purely CSS (fill:none vs filled).
-        // ensureSymbolDef must therefore assign both the descriptive id 'circle'.
+    it('symbol:0 and symbol:100 each get their own <symbol> with descriptive ids', function(done) {
+        // Each variant (closed / open / dot / open-dot) gets its own <symbol> element,
+        // even though open variants share the same SVG path as the closed counterpart.
+        // The open/closed distinction is still CSS-only (fill:none vs filled).
         Plotly.newPlot(gd, [{
             mode: 'markers',
             x: [1, 2, 3, 4],
@@ -117,21 +168,23 @@ describe('Marker symbol performance', function() {
         }]).then(function() {
             var defs = d3Select(gd).select('defs');
             var symbolDefs = defs.selectAll('symbol');
-            expect(symbolDefs.size()).toBe(1, 'only 1 <symbol> definition for circle and circle-open');
+            expect(symbolDefs.size()).toBe(2, '2 <symbol> defs: one for circle, one for circle-open');
 
-            var symEl = symbolDefs.node();
-            expect(symEl.getAttribute('id')).toBe('circle', 'symbol id is "circle"');
+            var ids = [];
+            symbolDefs.each(function() { ids.push(this.getAttribute('id')); });
+            expect(ids.sort()).toEqual(['circle', 'circle-open'], 'ids are "circle" and "circle-open"');
 
             var useEls = gd.querySelectorAll('use.point');
             expect(useEls.length).toBe(4, '4 <use> elements');
+            // Even-index points use symbol:0 → #circle; odd-index → symbol:100 → #circle-open
             for(var i = 0; i < useEls.length; i++) {
-                var href = useEls[i].getAttribute('href') || useEls[i].getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-                expect(href).toBe('#circle', 'use href is #circle');
+                var href = getUseHref(useEls[i]);
+                expect(href).toBe(i % 2 === 0 ? '#circle' : '#circle-open', 'href matches variant');
             }
         }).then(done, done.fail);
     });
 
-    it('symbol:200/300 (circle-dot/circle-open-dot) should get id "circle-dot"', function(done) {
+    it('symbol:200/300 each get their own <symbol> with descriptive ids', function(done) {
         Plotly.newPlot(gd, [{
             mode: 'markers',
             x: [1, 2],
@@ -140,10 +193,29 @@ describe('Marker symbol performance', function() {
         }]).then(function() {
             var defs = d3Select(gd).select('defs');
             var symbolDefs = defs.selectAll('symbol');
-            expect(symbolDefs.size()).toBe(1, 'only 1 <symbol> definition for circle-dot and circle-open-dot');
+            expect(symbolDefs.size()).toBe(2, '2 <symbol> defs: circle-dot and circle-open-dot');
 
-            var symEl = symbolDefs.node();
-            expect(symEl.getAttribute('id')).toBe('circle-dot', 'symbol id is "circle-dot"');
+            var ids = [];
+            symbolDefs.each(function() { ids.push(this.getAttribute('id')); });
+            expect(ids.sort()).toEqual(['circle-dot', 'circle-open-dot'], 'ids are "circle-dot" and "circle-open-dot"');
+        }).then(done, done.fail);
+    });
+
+    it('all four variants of a symbol get their own <symbol> with correct ids', function(done) {
+        Plotly.newPlot(gd, [{
+            mode: 'markers',
+            x: [1, 2, 3, 4],
+            y: [1, 2, 3, 4],
+            marker: { symbol: ['square', 'square-open', 'square-dot', 'square-open-dot'], size: 10 }
+        }]).then(function() {
+            var defs = d3Select(gd).select('defs');
+            var symbolDefs = defs.selectAll('symbol');
+            expect(symbolDefs.size()).toBe(4, '4 <symbol> defs for all square variants');
+
+            var ids = [];
+            symbolDefs.each(function() { ids.push(this.getAttribute('id')); });
+            expect(ids.sort()).toEqual(['square', 'square-dot', 'square-open', 'square-open-dot'],
+                'ids cover all four variants');
         }).then(done, done.fail);
     });
 });

@@ -380,11 +380,28 @@ var MAXSYMBOL = drawing.symbolNames.length;
 var DOTPATH = 'M0,0.5L0.5,0L0,-0.5L-0.5,0Z';
 drawing.symbolDotPath = DOTPATH;
 
-// Pre-build dot-variant paths: symbolPaths[idx + MAXSYMBOL] = base path + dot subpath.
-// Symbols with noDot stay undefined (dot variants are not valid for them).
+// Pre-build all four variant paths for every symbol, indexed by the legacy
+// numeric code (same encoding the user types as `symbol: N`):
+//   [0,   100)  closed       (base path)
+//   [100, 200)  open         (same base path — open/closed is CSS-only)
+//   [200, 300)  closed-dot   (base + dot sub-path)
+//   [300, 400)  open-dot     (same as closed-dot — open is CSS-only)
+//
+// Why do open variants share the same SVG path as their closed counterpart
+// instead of using a path without the closing "Z" command?
+// The SVG "Z" command only draws a line back to the path's start point
+// (geometric closure); it has NO effect on fill or stroke painting.
+// The open/closed distinction requires setting fill:none and stroke:<fillColor>
+// at render time, where fillColor is data-dependent (per-point marker color).
+// That runtime color can never be embedded in a static <symbol> path, so the
+// CSS-based approach is both necessary and correct.
+//
+// Symbols with noDot leave the dot-variant slots undefined (those variants are invalid).
 for(var _i = 0; _i < MAXSYMBOL; _i++) {
+    drawing.symbolPaths[_i + 100] = drawing.symbolPaths[_i]; // open = same path
     if(!drawing.symbolNoDot[_i]) {
-        drawing.symbolPaths[_i + MAXSYMBOL] = drawing.symbolPaths[_i] + DOTPATH;
+        drawing.symbolPaths[_i + 200] = drawing.symbolPaths[_i] + DOTPATH;
+        drawing.symbolPaths[_i + 300] = drawing.symbolPaths[_i] + DOTPATH;
     }
 }
 
@@ -395,8 +412,10 @@ for(var _i = 0; _i < MAXSYMBOL; _i++) {
  * (any string starting with 'M'/'m').
  *
  * Returns {n, path, open, dot, backoff, noDot, noFill}.
- * n is the deterministic integer id for built-ins (0…2*MAXSYMBOL-1),
- * or null for custom SVG paths (id assigned per-SVG by ensureSymbolDef).
+ * n matches the legacy numeric encoding unambiguously:
+ *   n = idx + (open ? 100 : 0) + (dot ? 200 : 0)
+ * so lookupSymbol(100).n === 100, lookupSymbol('circle-open').n === 100, etc.
+ * n is null for custom SVG paths (id assigned per-SVG by ensureSymbolDef).
  * Returns null for unrecognised input (callers should fall back to circle).
  */
 drawing.lookupSymbol = function (v) {
@@ -424,7 +443,7 @@ drawing.lookupSymbol = function (v) {
         return null;
     }
 
-    var symN = dot ? idx + MAXSYMBOL : idx;
+    var symN = idx + (open ? 100 : 0) + (dot ? 200 : 0);
     return {
         n:    symN,
         name: name,
@@ -437,34 +456,33 @@ drawing.lookupSymbol = function (v) {
     };
 };
 
-// Kept for external consumers that rely on the numeric encoding.
+// sym.n already equals the legacy numeric encoding, so symbolNumber is a simple wrapper.
 drawing.symbolNumber = function (v) {
     var sym = drawing.lookupSymbol(v);
     if (!sym || !sym.name) return 0;
-    var idx = drawing.symbolNames.indexOf(sym.name);
-    return idx + (sym.open ? 100 : 0) + (sym.dot ? 200 : 0);
+    return sym.n;
 };
 
 drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
     var node = defs.node();
-    // Per-SVG map: path string → assigned <symbol> id. Stored on the <defs> DOM
-    // node so it is automatically freed when the SVG is removed.
-    // Built-ins get id = sym.name['-dot']; custom paths get id = 'c0', 'c1', …
-    // e.g. symbol:0 ('circle') and symbol:100 ('circle-open') both get id='circle'
-    // since they share the same SVG path (open/closed is handled via CSS fill/stroke).
+    // Per-SVG map: built-ins keyed by sym.n (each variant gets its own <symbol>);
+    // custom SVG paths keyed by path string → 'c0', 'c1', …
+    // Stored on the <defs> DOM node so it is freed when the SVG is removed.
     var symMap = node._symMap || (node._symMap = {});
 
-    if(sym.path in symMap) return symMap[sym.path];
+    // Use sym.n as key for built-ins; sym.path for custom (sym.n === null).
+    var key = sym.n !== null ? sym.n : sym.path;
+    if(key in symMap) return symMap[key];
 
     var id;
     if(sym.n !== null) {
-        id = sym.name + (sym.dot ? '-dot' : '');
+        id = sym.name + (sym.open ? '-open' : '') + (sym.dot ? '-dot' : '');
     } else {
         if(!node._customSymCount) node._customSymCount = 0;
         id = 'c' + node._customSymCount++;
     }
-    symMap[sym.path] = id;
+    symMap[key] = id;
 
     defs.append('symbol')
         .attr('id', id)
