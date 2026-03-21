@@ -448,24 +448,21 @@ drawing.symbolNumber = function (v) {
 drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
     var node = defs.node();
-    // Per-SVG map: built-ins keyed by '' + sym.n → true; custom paths keyed by
-    // path string → assigned 'c{i}' id. Stored on the <defs> DOM node so it is
-    // automatically freed when the SVG is removed.
+    // Per-SVG map: path string → assigned <symbol> id. Stored on the <defs> DOM
+    // node so it is automatically freed when the SVG is removed.
+    // Built-ins get id = '' + sym.n; custom paths get id = 'c0', 'c1', …
     var symMap = node._symMap || (node._symMap = {});
+
+    if(sym.path in symMap) return symMap[sym.path];
 
     var id;
     if(sym.n !== null) {
-        // Built-in: id is fixed and deterministic.
         id = '' + sym.n;
-        if(id in symMap) return id;
-        symMap[id] = true;
     } else {
-        // Custom SVG path: assign 'c0', 'c1', … per SVG on first encounter.
-        if(sym.path in symMap) return symMap[sym.path];
         if(!node._customSymCount) node._customSymCount = 0;
         id = 'c' + node._customSymCount++;
-        symMap[sym.path] = id;
     }
+    symMap[sym.path] = id;
 
     defs.append('symbol')
         .attr('id', id)
