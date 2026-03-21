@@ -25339,11 +25339,9 @@ var Plotly = (() => {
         }
       }
       var _i;
-      var _customSymMap = {};
       drawing.lookupSymbol = function(v) {
         if (typeof v === "string" && /^[Mm]/.test(v)) {
-          if (!_customSymMap[v]) _customSymMap[v] = 2 * MAXSYMBOL + Object.keys(_customSymMap).length;
-          return { n: _customSymMap[v], path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
+          return { n: null, path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
         }
         var name2, open = false, dot = false, idx;
         if (isNumeric(v)) {
@@ -25389,10 +25387,20 @@ var Plotly = (() => {
       };
       drawing.ensureSymbolDef = function(gd, sym) {
         var defs = gd._fullLayout._defs;
-        var id = "" + sym.n;
-        if (defs.select("#" + id).empty()) {
-          defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
+        var node = defs.node();
+        var symMap = node._symMap || (node._symMap = {});
+        var id;
+        if (sym.n !== null) {
+          id = "" + sym.n;
+          if (id in symMap) return id;
+          symMap[id] = true;
+        } else {
+          if (sym.path in symMap) return symMap[sym.path];
+          if (!node._customSymCount) node._customSymCount = 0;
+          id = "c" + node._customSymCount++;
+          symMap[sym.path] = id;
         }
+        defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
         return id;
       };
       var stopFormatter = numberFormat("~f");

@@ -388,27 +388,21 @@ for(var _i = 0; _i < MAXSYMBOL; _i++) {
     }
 }
 
-// Global map for custom SVG path strings → their n (starts at 2 * MAXSYMBOL).
-// Built-in non-dot n = idx (0…MAXSYMBOL-1).
-// Built-in dot     n = idx + MAXSYMBOL.
-// Custom path      n = 2*MAXSYMBOL + counter.
-var _customSymMap = {};
-
 /**
  * Unified symbol lookup.
  * Accepts a built-in name ('circle', 'circle-open', 'circle-dot', …),
  * a legacy numeric code (0, 100, 200, 300, …), or a raw SVG path string
  * (any string starting with 'M'/'m').
  *
- * Returns {n, path, open, dot, backoff, noDot, noFill} where n is the
- * globally-unique integer used as the <symbol> id.
+ * Returns {n, path, open, dot, backoff, noDot, noFill}.
+ * n is the deterministic integer id for built-ins (0…2*MAXSYMBOL-1),
+ * or null for custom SVG paths (id assigned per-SVG by ensureSymbolDef).
  * Returns null for unrecognised input (callers should fall back to circle).
  */
 drawing.lookupSymbol = function (v) {
-    // Raw SVG path string — assign a stable global n and pass through.
+    // Raw SVG path — no deterministic n; ensureSymbolDef will assign a per-SVG id.
     if (typeof v === 'string' && /^[Mm]/.test(v)) {
-        if (!_customSymMap[v]) _customSymMap[v] = 2 * MAXSYMBOL + Object.keys(_customSymMap).length;
-        return { n: _customSymMap[v], path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
+        return { n: null, path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
     }
 
     var name, open = false, dot = false, idx;
@@ -453,14 +447,30 @@ drawing.symbolNumber = function (v) {
 
 drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
-    // sym.n is the globally-unique integer for this symbol variant; use as <symbol> id.
-    var id = '' + sym.n;
-    if (defs.select('#' + id).empty()) {
-        defs.append('symbol')
-            .attr('id', id)
-            .attr('overflow', 'visible')
-            .append('path').attr('d', sym.path);
+    var node = defs.node();
+    // Per-SVG map: built-ins keyed by '' + sym.n → true; custom paths keyed by
+    // path string → assigned 'c{i}' id. Stored on the <defs> DOM node so it is
+    // automatically freed when the SVG is removed.
+    var symMap = node._symMap || (node._symMap = {});
+
+    var id;
+    if(sym.n !== null) {
+        // Built-in: id is fixed and deterministic.
+        id = '' + sym.n;
+        if(id in symMap) return id;
+        symMap[id] = true;
+    } else {
+        // Custom SVG path: assign 'c0', 'c1', … per SVG on first encounter.
+        if(sym.path in symMap) return symMap[sym.path];
+        if(!node._customSymCount) node._customSymCount = 0;
+        id = 'c' + node._customSymCount++;
+        symMap[sym.path] = id;
     }
+
+    defs.append('symbol')
+        .attr('id', id)
+        .attr('overflow', 'visible')
+        .append('path').attr('d', sym.path);
     return id;
 };
 

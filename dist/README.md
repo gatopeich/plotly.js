@@ -137,7 +137,7 @@ The `geo` partial bundle contains trace modules `choropleth`, `scatter` and `sca
 
 | Raw size | Minified size | Minified + gzip size |
 |------|-----------------|------------------------|
-| 2.9 MB | 1.2 MB | 413.9 kB |
+| 2.9 MB | 1.2 MB | 414 kB |
 
 #### CDN links
 > https://cdn.plot.ly/plotly-geo-3.4.0.js
@@ -183,7 +183,7 @@ The `gl2d` partial bundle contains trace modules `parcoords`, `scatter`, `scatte
 
 | Raw size | Minified size | Minified + gzip size |
 |------|-----------------|------------------------|
-| 3.8 MB | 1.5 MB | 520.9 kB |
+| 3.8 MB | 1.5 MB | 521 kB |
 
 #### CDN links
 > https://cdn.plot.ly/plotly-gl2d-3.4.0.js
@@ -206,7 +206,7 @@ The `mapbox` partial bundle contains trace modules `choroplethmapbox`, `densitym
 
 | Raw size | Minified size | Minified + gzip size |
 |------|-----------------|------------------------|
-| 4.5 MB | 1.9 MB | 578.8 kB |
+| 4.5 MB | 1.9 MB | 578.9 kB |
 
 #### CDN links
 > https://cdn.plot.ly/plotly-mapbox-3.4.0.js
