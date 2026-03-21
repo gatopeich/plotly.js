@@ -103,4 +103,47 @@ describe('Marker symbol performance', function() {
             });
         }).then(done, done.fail);
     });
+
+    it('symbol:100 (circle-open) should get id "circle" and share 1 <symbol> def with symbol:0', function(done) {
+        // symbol: 100 is the legacy numeric encoding for circle-open.
+        // Both circle (0) and circle-open (100) share the same SVG path; the
+        // open/closed distinction is purely CSS (fill:none vs filled).
+        // ensureSymbolDef must therefore assign both the descriptive id 'circle'.
+        Plotly.newPlot(gd, [{
+            mode: 'markers',
+            x: [1, 2, 3, 4],
+            y: [1, 2, 3, 4],
+            marker: { symbol: [0, 100, 0, 100], size: 10 }
+        }]).then(function() {
+            var defs = d3Select(gd).select('defs');
+            var symbolDefs = defs.selectAll('symbol');
+            expect(symbolDefs.size()).toBe(1, 'only 1 <symbol> definition for circle and circle-open');
+
+            var symEl = symbolDefs.node();
+            expect(symEl.getAttribute('id')).toBe('circle', 'symbol id is "circle"');
+
+            var useEls = gd.querySelectorAll('use.point');
+            expect(useEls.length).toBe(4, '4 <use> elements');
+            for(var i = 0; i < useEls.length; i++) {
+                var href = useEls[i].getAttribute('href') || useEls[i].getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+                expect(href).toBe('#circle', 'use href is #circle');
+            }
+        }).then(done, done.fail);
+    });
+
+    it('symbol:200/300 (circle-dot/circle-open-dot) should get id "circle-dot"', function(done) {
+        Plotly.newPlot(gd, [{
+            mode: 'markers',
+            x: [1, 2],
+            y: [1, 2],
+            marker: { symbol: [200, 300], size: 10 }
+        }]).then(function() {
+            var defs = d3Select(gd).select('defs');
+            var symbolDefs = defs.selectAll('symbol');
+            expect(symbolDefs.size()).toBe(1, 'only 1 <symbol> definition for circle-dot and circle-open-dot');
+
+            var symEl = symbolDefs.node();
+            expect(symEl.getAttribute('id')).toBe('circle-dot', 'symbol id is "circle-dot"');
+        }).then(done, done.fail);
+    });
 });

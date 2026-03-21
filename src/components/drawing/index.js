@@ -450,14 +450,16 @@ drawing.ensureSymbolDef = function (gd, sym) {
     var node = defs.node();
     // Per-SVG map: path string → assigned <symbol> id. Stored on the <defs> DOM
     // node so it is automatically freed when the SVG is removed.
-    // Built-ins get id = '' + sym.n; custom paths get id = 'c0', 'c1', …
+    // Built-ins get id = sym.name['-dot']; custom paths get id = 'c0', 'c1', …
+    // e.g. symbol:0 ('circle') and symbol:100 ('circle-open') both get id='circle'
+    // since they share the same SVG path (open/closed is handled via CSS fill/stroke).
     var symMap = node._symMap || (node._symMap = {});
 
     if(sym.path in symMap) return symMap[sym.path];
 
     var id;
     if(sym.n !== null) {
-        id = '' + sym.n;
+        id = sym.name + (sym.dot ? '-dot' : '');
     } else {
         if(!node._customSymCount) node._customSymCount = 0;
         id = 'c' + node._customSymCount++;
