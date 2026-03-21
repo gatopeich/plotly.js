@@ -436,45 +436,24 @@ drawing.symbolNumber = function (v) {
 
 drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
-    var id;
+    // Map lives on the <defs> DOM node — one map per SVG, auto-freed with the element.
+    var node = defs.node();
+    var symMap = node._symMap || (node._symMap = {});
 
-    if (!sym.name) {
-        // Custom SVG path string – stable ID stored per-layout
-        var customMap = gd._fullLayout._customSymPaths ||
-            (gd._fullLayout._customSymPaths = {});
-        if (!customMap[sym.path]) {
-            customMap[sym.path] = 'plotly-sym-c' + Object.keys(customMap).length;
-        }
-        id = customMap[sym.path];
-        if (defs.select('#' + id).empty()) {
-            defs.append('symbol')
-                .attr('id', id)
-                .attr('overflow', 'visible')
-                .append('path')
-                .attr('d', sym.path);
-        }
-        return id;
-    }
+    // Key: built-in name (+ '.' suffix for dot variant) or raw path string for custom
+    var key = sym.name ? sym.name + (sym.dot ? '.' : '') : sym.path;
 
-    id = 'plotly-sym-' + sym.name;
+    if (!(key in symMap)) symMap[key] = Object.keys(symMap).length;
+    var id = '' + symMap[key];
+
     if (defs.select('#' + id).empty()) {
-        defs.append('symbol')
+        var el = defs.append('symbol')
             .attr('id', id)
-            .attr('overflow', 'visible')
-            .append('path')
-            .attr('d', sym.path);
-    }
-
-    if (sym.dot) {
-        var dotId = id + '-dot';
-        if (defs.select('#' + dotId).empty()) {
-            var dotSym = defs.append('symbol')
-                .attr('id', dotId)
-                .attr('overflow', 'visible');
-            dotSym.append('path').attr('d', sym.path);
-            dotSym.append('path').attr('d', DOTPATH);
+            .attr('overflow', 'visible');
+        el.append('path').attr('d', sym.path);
+        if (sym.dot && !sym.noDot) {
+            el.append('path').attr('d', DOTPATH);
         }
-        return dotId;
     }
     return id;
 };

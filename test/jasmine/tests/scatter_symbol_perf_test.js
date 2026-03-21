@@ -23,7 +23,7 @@ describe('Marker symbol performance', function() {
             marker: { symbol: 'circle', size: 8 }
         }]).then(function() {
             var defs = d3Select(gd).select('defs');
-            var symbolDefs = defs.selectAll('symbol[id^="plotly-sym-"]');
+            var symbolDefs = defs.selectAll('symbol');
             expect(symbolDefs.size()).toBe(1, 'only 1 <symbol> definition');
 
             var useEls = d3Select(gd).selectAll('use.point');
@@ -58,7 +58,7 @@ describe('Marker symbol performance', function() {
             // than 1000 full <path d="..."> elements
             expect(byteSize).toBeLessThan(400000, 'SVG byte size under 400KB');
 
-            var symbolDefs = d3Select(gd).select('defs').selectAll('symbol[id^="plotly-sym-"]');
+            var symbolDefs = d3Select(gd).select('defs').selectAll('symbol');
             expect(symbolDefs.size()).toBe(10, '10 <symbol> definitions');
         }).then(done, done.fail);
     });

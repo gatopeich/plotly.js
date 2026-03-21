@@ -4,6 +4,14 @@
 * All rights reserved.
 * Licensed under the MIT license
 */
+(
+ function(root, factory) {
+  if (typeof module === "object" && module.exports) {
+   module.exports = factory();
+  } else {
+   root.moduleName = factory();
+  }
+} (typeof self !== "undefined" ? self : this, () => {
 "use strict";
 var Plotly = (() => {
   var __create = Object.create;
@@ -23493,30 +23501,17 @@ var Plotly = (() => {
       };
       drawing.ensureSymbolDef = function(gd, sym) {
         var defs = gd._fullLayout._defs;
-        var id;
-        if (!sym.name) {
-          var customMap = gd._fullLayout._customSymPaths || (gd._fullLayout._customSymPaths = {});
-          if (!customMap[sym.path]) {
-            customMap[sym.path] = "plotly-sym-c" + Object.keys(customMap).length;
-          }
-          id = customMap[sym.path];
-          if (defs.select("#" + id).empty()) {
-            defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
-          }
-          return id;
-        }
-        id = "plotly-sym-" + sym.name;
+        var node = defs.node();
+        var symMap = node._symMap || (node._symMap = {});
+        var key = sym.name ? sym.name + (sym.dot ? "." : "") : sym.path;
+        if (!(key in symMap)) symMap[key] = Object.keys(symMap).length;
+        var id = "" + symMap[key];
         if (defs.select("#" + id).empty()) {
-          defs.append("symbol").attr("id", id).attr("overflow", "visible").append("path").attr("d", sym.path);
-        }
-        if (sym.dot) {
-          var dotId = id + "-dot";
-          if (defs.select("#" + dotId).empty()) {
-            var dotSym = defs.append("symbol").attr("id", dotId).attr("overflow", "visible");
-            dotSym.append("path").attr("d", sym.path);
-            dotSym.append("path").attr("d", DOTPATH);
+          var el = defs.append("symbol").attr("id", id).attr("overflow", "visible");
+          el.append("path").attr("d", sym.path);
+          if (sym.dot && !sym.noDot) {
+            el.append("path").attr("d", DOTPATH);
           }
-          return dotId;
         }
         return id;
       };
@@ -266601,3 +266596,7 @@ maplibre-gl/dist/maplibre-gl.js:
    * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt
    *)
 */
+
+window.Plotly = Plotly;
+return Plotly;
+}));
