@@ -500,7 +500,7 @@ function getSymbolSdf(d, trace) {
     if (symbol === 'circle') return null;
 
     var symbolPath, symbolSdf;
-    var sym = Drawing.lookupSymbol(symbol) || Drawing.lookupSymbol(0);
+    var sym = Drawing.lookupSymbol(symbol);
     var isDot = helpers.isDotSymbol(symbol);
 
     // until we may handle angles in shader?

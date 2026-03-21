@@ -106,7 +106,7 @@ drawing.setRect = function (s, x, y, w, h) {
  *  true if selection got translated
  *  false if selection could not get translated
  */
-drawing.translatePoint = function(d, sel, xa, ya) {
+drawing.translatePoint = function (d, sel, xa, ya) {
     var x = xa.c2p(d.x);
     var y = ya.c2p(d.y);
 
@@ -339,7 +339,7 @@ drawing.symbolNoFill = {};
 drawing.symbolList = [];
 
 var _n = 0;
-Object.keys(SYMBOLDEFS).forEach(function(k) {
+Object.keys(SYMBOLDEFS).forEach(function (k) {
     var symDef = SYMBOLDEFS[k];
     var n = _n++;
     drawing.symbolList.push(
@@ -390,7 +390,7 @@ drawing.symbolDotPath = DOTPATH;
  * – for built-ins, `base` is also set to the 0-based index.
  * Returns null for unrecognised input (callers should fall back to circle).
  */
-drawing.lookupSymbol = function(v) {
+drawing.lookupSymbol = function (v) {
     // Raw SVG path string – pass straight through
     if (typeof v === 'string' && /^[Mm]/.test(v)) {
         return { path: v, open: false, dot: false, backoff: 0, noDot: false, noFill: false };
@@ -427,14 +427,14 @@ drawing.lookupSymbol = function(v) {
 };
 
 // Kept for external consumers that rely on the numeric encoding.
-drawing.symbolNumber = function(v) {
+drawing.symbolNumber = function (v) {
     var sym = drawing.lookupSymbol(v);
     if (!sym || !sym.name) return 0;
     var idx = drawing.symbolNames.indexOf(sym.name);
     return idx + (sym.open ? 100 : 0) + (sym.dot ? 200 : 0);
 };
 
-drawing.ensureSymbolDef = function(gd, sym) {
+drawing.ensureSymbolDef = function (gd, sym) {
     var defs = gd._fullLayout._defs;
     var id;
 
@@ -971,7 +971,7 @@ drawing.pointStyle = function (s, trace, gd, pt) {
     });
 };
 
-drawing.singlePointStyle = function(d, sel, trace, fns, gd, pt) {
+drawing.singlePointStyle = function (d, sel, trace, fns, gd, pt) {
     var marker = trace.marker;
     var markerLine = marker.line;
 
@@ -1301,7 +1301,7 @@ drawing.selectedPointStyle = function (s, trace) {
     }
 
     if (fns.selectedSizeFn) {
-        seq.push(function(pt, d) {
+        seq.push(function (pt, d) {
             var mrc2 = fns.selectedSizeFn(d);
             var scale = mrc2 / 20;
             var node = pt.node();
