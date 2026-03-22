@@ -450,7 +450,7 @@ drawing.lookupSymbol = function (v) {
 // sym.n already equals the legacy numeric encoding, so symbolNumber is a simple wrapper.
 drawing.symbolNumber = function (v) {
     var sym = drawing.lookupSymbol(v);
-    if (!sym || !sym.name) return 0;
+    if (!sym || !sym.name) throw new Error('Unknown marker symbol: ' + v);
     return sym.n;
 };
 
@@ -1000,7 +1000,8 @@ drawing.singlePointStyle = function (d, sel, trace, fns, gd, pt) {
         }
 
         var symbolValue = d.mx || marker.symbol;
-        var sym = drawing.lookupSymbol(symbolValue) || drawing.lookupSymbol(0);
+        var sym = drawing.lookupSymbol(symbolValue);
+        if (!sym) throw new Error('Unknown marker symbol: ' + symbolValue);
 
         // save if this marker is open (impacts color handling)
         d.om = sym.open;
@@ -1605,7 +1606,13 @@ function applyBackoff(pt, start) {
             var endMarkerSize = endMarker.size;
             if (Lib.isArrayOrTypedArray(endMarkerSize)) endMarkerSize = endMarkerSize[endI];
 
-            b = endMarker ? ((drawing.lookupSymbol(endMarkerSymbol) || {}).backoff || 0) * endMarkerSize : 0;
+            if(endMarker) {
+                var endMarkerSym = drawing.lookupSymbol(endMarkerSymbol);
+                if (!endMarkerSym) throw new Error('Unknown marker symbol: ' + endMarkerSymbol);
+                b = (endMarkerSym.backoff || 0) * endMarkerSize;
+            } else {
+                b = 0;
+            }
             b += drawing.getMarkerStandoff(d[endI], trace) || 0;
         }
 
