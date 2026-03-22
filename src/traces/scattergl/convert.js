@@ -504,7 +504,6 @@ function getSymbolSdf(d, trace) {
 
     var symbolPath, symbolSdf;
     var sym = Drawing.lookupSymbol(symbol);
-    if (!sym) throw new Error('Unknown marker symbol: ' + symbol);
     var isDot = helpers.isDotSymbol(symbol);
 
     // until we may handle angles in shader?
