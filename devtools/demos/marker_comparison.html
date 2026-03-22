@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Marker Comparison — Old f() vs New integer paths at r=20</title>
+<style>
+body { font-family: monospace; font-size: 12px; margin: 10px; background: #f8f8f8; }
+h1 { font-size: 16px; margin-bottom: 4px; }
+#summary { background: #fff3cd; padding: 6px 10px; border-left: 4px solid #ffc107; margin-bottom: 10px; display: inline-block; }
+table { border-collapse: collapse; }
+th { background: #333; color: #fff; padding: 4px 8px; font-size: 11px; }
+td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid #ddd; }
+td.name { font-weight: bold; white-space: nowrap; padding-right: 10px; color: #555; }
+canvas { display: block; background: #fff; border: 1px solid #ccc; }
+.diff-count { font-size: 10px; color: #888; text-align: center; margin-top: 2px; }
+.zero { color: #080; font-weight: bold; }
+.nonzero { color: #c00; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Marker Comparison — Old <code>f(r=20)</code> vs New integer-path vs New 1-decimal path</h1>
+<div id="summary">Computing…</div>
+
+<table>
+<tr>
+  <th>#</th><th>Name</th>
+  <th>Old (f, 2dp)</th>
+  <th>New (r0, int)</th>
+  <th>New (r1, 1dp)</th>
+  <th>Diff Old→r0</th>
+  <th>Diff Old→r1</th>
+</tr>
+</table>
+
+<script>
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+var sqrt2 = Math.sqrt(2), sqrt3 = Math.sqrt(3), PI = Math.PI;
+var cos = Math.cos, sin = Math.sin;
+
+function round2(x) { return Math.round(x * 100) / 100; }
+function round1(x) { return Math.round(x * 10) / 10; }
+// Upstream round(x,n) — only n=2 used
+function round(x, n) { return n ? Math.round(x * (n = Math.pow(10, n))) / n : Math.round(x); }
+
+// At angle=0, standoff=0 → align is identity
+function align(_a, _s, path) { return path; }
+function skipAngle(a) { return a === null; }
+
+// ---------------------------------------------------------------------------
+// Upstream f() functions verbatim from plotly/plotly.js master symbol_defs.js
+// (angle=0, standoff=0 → align is no-op, skipAngle(0)=false)
+// ---------------------------------------------------------------------------
+var OLD = {
+  circle: function(r) {
+    var rs = round(r, 2);
+    return 'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  square: function(r) {
+    var rs = round(r, 2);
+    return 'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  diamond: function(r) {
+    var rd = round(r * 1.3, 2);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z';
+  },
+  cross: function(r) {
+    var rc = round(r * 0.4, 2), rc2 = round(r * 1.2, 2);
+    return 'M' + rc2 + ',' + rc + 'H' + rc + 'V' + rc2 + 'H-' + rc +
+      'V' + rc + 'H-' + rc2 + 'V-' + rc + 'H-' + rc + 'V-' + rc2 +
+      'H' + rc + 'V-' + rc + 'H' + rc2 + 'Z';
+  },
+  x: function(r) {
+    var rx = round(r * 0.8 / sqrt2, 2);
+    var ne = 'l' + rx + ',' + rx, se = 'l' + rx + ',-' + rx;
+    var sw = 'l-' + rx + ',-' + rx, nw = 'l-' + rx + ',' + rx;
+    return 'M0,' + rx + ne + se + sw + se + sw + nw + sw + nw + ne + nw + ne + 'Z';
+  },
+  'triangle-up': function(r) {
+    var rt = round(r * 2 / sqrt3, 2), r2 = round(r / 2, 2), rs = round(r, 2);
+    return 'M-' + rt + ',' + r2 + 'H' + rt + 'L0,-' + rs + 'Z';
+  },
+  'triangle-down': function(r) {
+    var rt = round(r * 2 / sqrt3, 2), r2 = round(r / 2, 2), rs = round(r, 2);
+    return 'M-' + rt + ',-' + r2 + 'H' + rt + 'L0,' + rs + 'Z';
+  },
+  'triangle-left': function(r) {
+    var rt = round(r * 2 / sqrt3, 2), r2 = round(r / 2, 2), rs = round(r, 2);
+    return 'M' + r2 + ',-' + rt + 'V' + rt + 'L-' + rs + ',0Z';
+  },
+  'triangle-right': function(r) {
+    var rt = round(r * 2 / sqrt3, 2), r2 = round(r / 2, 2), rs = round(r, 2);
+    return 'M-' + r2 + ',-' + rt + 'V' + rt + 'L' + rs + ',0Z';
+  },
+  'triangle-ne': function(r) {
+    var r1 = round(r * 0.6, 2), r2 = round(r * 1.2, 2);
+    return 'M-' + r2 + ',-' + r1 + 'H' + r1 + 'V' + r2 + 'Z';
+  },
+  'triangle-se': function(r) {
+    var r1 = round(r * 0.6, 2), r2 = round(r * 1.2, 2);
+    return 'M' + r1 + ',-' + r2 + 'V' + r1 + 'H-' + r2 + 'Z';
+  },
+  'triangle-sw': function(r) {
+    var r1 = round(r * 0.6, 2), r2 = round(r * 1.2, 2);
+    return 'M' + r2 + ',' + r1 + 'H-' + r1 + 'V-' + r2 + 'Z';
+  },
+  'triangle-nw': function(r) {
+    var r1 = round(r * 0.6, 2), r2 = round(r * 1.2, 2);
+    return 'M-' + r1 + ',' + r2 + 'V-' + r1 + 'H' + r2 + 'Z';
+  },
+  pentagon: function(r) {
+    var x1 = round(r * 0.951, 2), x2 = round(r * 0.588, 2);
+    var y0 = round(-r, 2), y1 = round(r * -0.309, 2), y2 = round(r * 0.809, 2);
+    return 'M' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'H-' + x2 +
+      'L-' + x1 + ',' + y1 + 'L0,' + y0 + 'Z';
+  },
+  hexagon: function(r) {
+    var y0 = round(r, 2), y1 = round(r / 2, 2), x = round(r * sqrt3 / 2, 2);
+    return 'M' + x + ',-' + y1 + 'V' + y1 + 'L0,' + y0 +
+      'L-' + x + ',' + y1 + 'V-' + y1 + 'L0,-' + y0 + 'Z';
+  },
+  hexagon2: function(r) {
+    var x0 = round(r, 2), x1 = round(r / 2, 2), y = round(r * sqrt3 / 2, 2);
+    return 'M-' + x1 + ',' + y + 'H' + x1 + 'L' + x0 +
+      ',0L' + x1 + ',-' + y + 'H-' + x1 + 'L-' + x0 + ',0Z';
+  },
+  octagon: function(r) {
+    var a = round(r * 0.924, 2), b = round(r * 0.383, 2);
+    return 'M-' + b + ',-' + a + 'H' + b + 'L' + a + ',-' + b + 'V' + b +
+      'L' + b + ',' + a + 'H-' + b + 'L-' + a + ',' + b + 'V-' + b + 'Z';
+  },
+  star: function(r) {
+    var rs = r * 1.4;
+    var x1 = round(rs * 0.225, 2), x2 = round(rs * 0.951, 2);
+    var x3 = round(rs * 0.363, 2), x4 = round(rs * 0.588, 2);
+    var y0 = round(-rs, 2), y1 = round(rs * -0.309, 2);
+    var y3 = round(rs * 0.118, 2), y4 = round(rs * 0.809, 2), y5 = round(rs * 0.382, 2);
+    return 'M' + x1 + ',' + y1 + 'H' + x2 + 'L' + x3 + ',' + y3 +
+      'L' + x4 + ',' + y4 + 'L0,' + y5 + 'L-' + x4 + ',' + y4 +
+      'L-' + x3 + ',' + y3 + 'L-' + x2 + ',' + y1 + 'H-' + x1 +
+      'L0,' + y0 + 'Z';
+  },
+  hexagram: function(r) {
+    var y = round(r * 0.66, 2), x1 = round(r * 0.38, 2), x2 = round(r * 0.76, 2);
+    return 'M-' + x2 + ',0l-' + x1 + ',-' + y + 'h' + x2 +
+      'l' + x1 + ',-' + y + 'l' + x1 + ',' + y + 'h' + x2 +
+      'l-' + x1 + ',' + y + 'l' + x1 + ',' + y + 'h-' + x2 +
+      'l-' + x1 + ',' + y + 'l-' + x1 + ',-' + y + 'h-' + x2 + 'Z';
+  },
+  'star-triangle-up': function(r) {
+    var x = round(r * sqrt3 * 0.8, 2), y1 = round(r * 0.8, 2), y2 = round(r * 1.6, 2);
+    var rc = round(r * 4, 2), aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + x + ',' + y1 + aP + x + ',' + y1 + aP + '0,-' + y2 + aP + '-' + x + ',' + y1 + 'Z';
+  },
+  'star-triangle-down': function(r) {
+    var x = round(r * sqrt3 * 0.8, 2), y1 = round(r * 0.8, 2), y2 = round(r * 1.6, 2);
+    var rc = round(r * 4, 2), aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M' + x + ',-' + y1 + aP + '-' + x + ',-' + y1 + aP + '0,' + y2 + aP + x + ',-' + y1 + 'Z';
+  },
+  'star-square': function(r) {
+    var rp = round(r * 1.1, 2), rc = round(r * 2, 2);
+    var aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + rp + ',-' + rp + aP + '-' + rp + ',' + rp +
+      aP + rp + ',' + rp + aP + rp + ',-' + rp + aP + '-' + rp + ',-' + rp + 'Z';
+  },
+  'star-diamond': function(r) {
+    var rp = round(r * 1.4, 2), rc = round(r * 1.9, 2);
+    var aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + rp + ',0' + aP + '0,' + rp + aP + rp + ',0' + aP + '0,-' + rp + aP + '-' + rp + ',0Z';
+  },
+  'diamond-tall': function(r) {
+    var x = round(r * 0.7, 2), y = round(r * 1.4, 2);
+    return 'M0,' + y + 'L' + x + ',0L0,-' + y + 'L-' + x + ',0Z';
+  },
+  'diamond-wide': function(r) {
+    var x = round(r * 1.4, 2), y = round(r * 0.7, 2);
+    return 'M0,' + y + 'L' + x + ',0L0,-' + y + 'L-' + x + ',0Z';
+  },
+  hourglass: function(r) {
+    var rs = round(r, 2);
+    return 'M' + rs + ',' + rs + 'H-' + rs + 'L' + rs + ',-' + rs + 'H-' + rs + 'Z';
+  },
+  bowtie: function(r) {
+    var rs = round(r, 2);
+    return 'M' + rs + ',' + rs + 'V-' + rs + 'L-' + rs + ',' + rs + 'V-' + rs + 'Z';
+  },
+  'circle-cross': function(r) {
+    var rs = round(r, 2);
+    return 'M0,' + rs + 'V-' + rs + 'M' + rs + ',0H-' + rs +
+      'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  'circle-x': function(r) {
+    var rs = round(r, 2), rc = round(r / sqrt2, 2);
+    return 'M' + rc + ',' + rc + 'L-' + rc + ',-' + rc +
+      'M' + rc + ',-' + rc + 'L-' + rc + ',' + rc +
+      'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  'square-cross': function(r) {
+    var rs = round(r, 2);
+    return 'M0,' + rs + 'V-' + rs + 'M' + rs + ',0H-' + rs +
+      'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  'square-x': function(r) {
+    var rs = round(r, 2);
+    return 'M' + rs + ',' + rs + 'L-' + rs + ',-' + rs +
+      'M' + rs + ',-' + rs + 'L-' + rs + ',' + rs +
+      'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  'diamond-cross': function(r) {
+    var rd = round(r * 1.3, 2);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z' +
+      'M0,-' + rd + 'V' + rd + 'M-' + rd + ',0H' + rd;
+  },
+  'diamond-x': function(r) {
+    var rd = round(r * 1.3, 2), r2 = round(r * 0.65, 2);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z' +
+      'M-' + r2 + ',-' + r2 + 'L' + r2 + ',' + r2 +
+      'M-' + r2 + ',' + r2 + 'L' + r2 + ',-' + r2;
+  },
+  'cross-thin': function(r) {
+    var rc = round(r * 1.4, 2);
+    return 'M0,' + rc + 'V-' + rc + 'M' + rc + ',0H-' + rc;
+  },
+  'x-thin': function(r) {
+    var rx = round(r, 2);
+    return 'M' + rx + ',' + rx + 'L-' + rx + ',-' + rx + 'M' + rx + ',-' + rx + 'L-' + rx + ',' + rx;
+  },
+  asterisk: function(r) {
+    var rc = round(r * 1.2, 2), rs = round(r * 0.85, 2);
+    return 'M0,' + rc + 'V-' + rc + 'M' + rc + ',0H-' + rc +
+      'M' + rs + ',' + rs + 'L-' + rs + ',-' + rs + 'M' + rs + ',-' + rs + 'L-' + rs + ',' + rs;
+  },
+  hash: function(r) {
+    var r1 = round(r / 2, 2), r2 = round(r, 2);
+    return 'M' + r1 + ',' + r2 + 'V-' + r2 +
+      'M' + (r1 - r2) + ',-' + r2 + 'V' + r2 +
+      'M' + r2 + ',' + r1 + 'H-' + r2 +
+      'M-' + r2 + ',' + (r1 - r2) + 'H' + r2;
+  },
+  'y-up': function(r) {
+    var x = round(r * 1.2, 2), y0 = round(r * 1.6, 2), y1 = round(r * 0.8, 2);
+    return 'M-' + x + ',' + y1 + 'L0,0M' + x + ',' + y1 + 'L0,0M0,-' + y0 + 'L0,0';
+  },
+  'y-down': function(r) {
+    var x = round(r * 1.2, 2), y0 = round(r * 1.6, 2), y1 = round(r * 0.8, 2);
+    return 'M-' + x + ',-' + y1 + 'L0,0M' + x + ',-' + y1 + 'L0,0M0,' + y0 + 'L0,0';
+  },
+  'y-left': function(r) {
+    var y = round(r * 1.2, 2), x0 = round(r * 1.6, 2), x1 = round(r * 0.8, 2);
+    return 'M' + x1 + ',' + y + 'L0,0M' + x1 + ',-' + y + 'L0,0M-' + x0 + ',0L0,0';
+  },
+  'y-right': function(r) {
+    var y = round(r * 1.2, 2), x0 = round(r * 1.6, 2), x1 = round(r * 0.8, 2);
+    return 'M-' + x1 + ',' + y + 'L0,0M-' + x1 + ',-' + y + 'L0,0M' + x0 + ',0L0,0';
+  },
+  'line-ew': function(r) {
+    var rc = round(r * 1.4, 2);
+    return 'M' + rc + ',0H-' + rc;
+  },
+  'line-ns': function(r) {
+    var rc = round(r * 1.4, 2);
+    return 'M0,' + rc + 'V-' + rc;
+  },
+  'line-ne': function(r) {
+    var rx = round(r, 2);
+    return 'M' + rx + ',-' + rx + 'L-' + rx + ',' + rx;
+  },
+  'line-nw': function(r) {
+    var rx = round(r, 2);
+    return 'M' + rx + ',' + rx + 'L-' + rx + ',-' + rx;
+  },
+  'arrow-up': function(r) {
+    var rx = round(r, 2), ry = round(r * 2, 2);
+    return 'M0,0L-' + rx + ',' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-down': function(r) {
+    var rx = round(r, 2), ry = round(r * 2, 2);
+    return 'M0,0L-' + rx + ',-' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-left': function(r) {
+    var rx = round(r * 2, 2), ry = round(r, 2);
+    return 'M0,0L' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-right': function(r) {
+    var rx = round(r * 2, 2), ry = round(r, 2);
+    return 'M0,0L-' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-bar-up': function(r) {
+    var rx = round(r, 2), ry = round(r * 2, 2);
+    return 'M-' + rx + ',0H' + rx + 'M0,0L-' + rx + ',' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-bar-down': function(r) {
+    var rx = round(r, 2), ry = round(r * 2, 2);
+    return 'M-' + rx + ',0H' + rx + 'M0,0L-' + rx + ',-' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-bar-left': function(r) {
+    var rx = round(r * 2, 2), ry = round(r, 2);
+    return 'M0,-' + ry + 'V' + ry + 'M0,0L' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-bar-right': function(r) {
+    var rx = round(r * 2, 2), ry = round(r, 2);
+    return 'M0,-' + ry + 'V' + ry + 'M0,0L-' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  arrow: function(r) {
+    var headAngle = PI / 2.5;
+    var x = 2 * r * cos(headAngle), y = 2 * r * sin(headAngle);
+    return 'M0,0L' + (-x) + ',' + y + 'L' + x + ',' + y + 'Z';
+  },
+  'arrow-wide': function(r) {
+    var headAngle = PI / 4;
+    var x = 2 * r * cos(headAngle), y = 2 * r * sin(headAngle);
+    return 'M0,0L' + (-x) + ',' + y + 'A ' + (2*r) + ',' + (2*r) + ' 0 0 1 ' + x + ',' + y + 'Z';
+  }
+};
+
+// New-style r1 variants: same formulas but 1-decimal rounding
+function mk1(fn) {
+  // Wrap round() to use round1
+  return function(r) {
+    var saved = round; // not used directly in closures, but we swap in the function body
+    // We re-implement by calling the same formula but substituting round1 for round2
+    return fn(r, true);
+  };
+}
+
+// Simpler: just duplicate with r1round
+function r1round(x, _n) { return round1(x); }
+
+var R1 = {
+  circle: function(r) {
+    var rs = round1(r);
+    return 'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  square: function(r) {
+    var rs = round1(r);
+    return 'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  diamond: function(r) {
+    var rd = round1(r * 1.3);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z';
+  },
+  cross: function(r) {
+    var rc = round1(r * 0.4), rc2 = round1(r * 1.2);
+    return 'M' + rc2 + ',' + rc + 'H' + rc + 'V' + rc2 + 'H-' + rc +
+      'V' + rc + 'H-' + rc2 + 'V-' + rc + 'H-' + rc + 'V-' + rc2 +
+      'H' + rc + 'V-' + rc + 'H' + rc2 + 'Z';
+  },
+  x: function(r) {
+    var rx = round1(r * 0.8 / sqrt2);
+    var ne = 'l' + rx + ',' + rx, se = 'l' + rx + ',-' + rx;
+    var sw = 'l-' + rx + ',-' + rx, nw = 'l-' + rx + ',' + rx;
+    return 'M0,' + rx + ne + se + sw + se + sw + nw + sw + nw + ne + nw + ne + 'Z';
+  },
+  'triangle-up': function(r) {
+    var rt = round1(r * 2 / sqrt3), r2 = round1(r / 2), rs = round1(r);
+    return 'M-' + rt + ',' + r2 + 'H' + rt + 'L0,-' + rs + 'Z';
+  },
+  'triangle-down': function(r) {
+    var rt = round1(r * 2 / sqrt3), r2 = round1(r / 2), rs = round1(r);
+    return 'M-' + rt + ',-' + r2 + 'H' + rt + 'L0,' + rs + 'Z';
+  },
+  'triangle-left': function(r) {
+    var rt = round1(r * 2 / sqrt3), r2 = round1(r / 2), rs = round1(r);
+    return 'M' + r2 + ',-' + rt + 'V' + rt + 'L-' + rs + ',0Z';
+  },
+  'triangle-right': function(r) {
+    var rt = round1(r * 2 / sqrt3), r2 = round1(r / 2), rs = round1(r);
+    return 'M-' + r2 + ',-' + rt + 'V' + rt + 'L' + rs + ',0Z';
+  },
+  'triangle-ne': function(r) {
+    var r1 = round1(r * 0.6), r2 = round1(r * 1.2);
+    return 'M-' + r2 + ',-' + r1 + 'H' + r1 + 'V' + r2 + 'Z';
+  },
+  'triangle-se': function(r) {
+    var r1 = round1(r * 0.6), r2 = round1(r * 1.2);
+    return 'M' + r1 + ',-' + r2 + 'V' + r1 + 'H-' + r2 + 'Z';
+  },
+  'triangle-sw': function(r) {
+    var r1 = round1(r * 0.6), r2 = round1(r * 1.2);
+    return 'M' + r2 + ',' + r1 + 'H-' + r1 + 'V-' + r2 + 'Z';
+  },
+  'triangle-nw': function(r) {
+    var r1 = round1(r * 0.6), r2 = round1(r * 1.2);
+    return 'M-' + r1 + ',' + r2 + 'V-' + r1 + 'H' + r2 + 'Z';
+  },
+  pentagon: function(r) {
+    var x1 = round1(r * 0.951), x2 = round1(r * 0.588);
+    var y0 = round1(-r), y1 = round1(r * -0.309), y2 = round1(r * 0.809);
+    return 'M' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'H-' + x2 +
+      'L-' + x1 + ',' + y1 + 'L0,' + y0 + 'Z';
+  },
+  hexagon: function(r) {
+    var y0 = round1(r), y1 = round1(r / 2), x = round1(r * sqrt3 / 2);
+    return 'M' + x + ',-' + y1 + 'V' + y1 + 'L0,' + y0 +
+      'L-' + x + ',' + y1 + 'V-' + y1 + 'L0,-' + y0 + 'Z';
+  },
+  hexagon2: function(r) {
+    var x0 = round1(r), x1 = round1(r / 2), y = round1(r * sqrt3 / 2);
+    return 'M-' + x1 + ',' + y + 'H' + x1 + 'L' + x0 +
+      ',0L' + x1 + ',-' + y + 'H-' + x1 + 'L-' + x0 + ',0Z';
+  },
+  octagon: function(r) {
+    var a = round1(r * 0.924), b = round1(r * 0.383);
+    return 'M-' + b + ',-' + a + 'H' + b + 'L' + a + ',-' + b + 'V' + b +
+      'L' + b + ',' + a + 'H-' + b + 'L-' + a + ',' + b + 'V-' + b + 'Z';
+  },
+  star: function(r) {
+    var rs = r * 1.4;
+    var x1 = round1(rs * 0.225), x2 = round1(rs * 0.951);
+    var x3 = round1(rs * 0.363), x4 = round1(rs * 0.588);
+    var y0 = round1(-rs), y1 = round1(rs * -0.309);
+    var y3 = round1(rs * 0.118), y4 = round1(rs * 0.809), y5 = round1(rs * 0.382);
+    return 'M' + x1 + ',' + y1 + 'H' + x2 + 'L' + x3 + ',' + y3 +
+      'L' + x4 + ',' + y4 + 'L0,' + y5 + 'L-' + x4 + ',' + y4 +
+      'L-' + x3 + ',' + y3 + 'L-' + x2 + ',' + y1 + 'H-' + x1 +
+      'L0,' + y0 + 'Z';
+  },
+  hexagram: function(r) {
+    var y = round1(r * 0.66), x1 = round1(r * 0.38), x2 = round1(r * 0.76);
+    return 'M-' + x2 + ',0l-' + x1 + ',-' + y + 'h' + x2 +
+      'l' + x1 + ',-' + y + 'l' + x1 + ',' + y + 'h' + x2 +
+      'l-' + x1 + ',' + y + 'l' + x1 + ',' + y + 'h-' + x2 +
+      'l-' + x1 + ',' + y + 'l-' + x1 + ',-' + y + 'h-' + x2 + 'Z';
+  },
+  'star-triangle-up': function(r) {
+    var x = round1(r * sqrt3 * 0.8), y1 = round1(r * 0.8), y2 = round1(r * 1.6);
+    var rc = round1(r * 4), aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + x + ',' + y1 + aP + x + ',' + y1 + aP + '0,-' + y2 + aP + '-' + x + ',' + y1 + 'Z';
+  },
+  'star-triangle-down': function(r) {
+    var x = round1(r * sqrt3 * 0.8), y1 = round1(r * 0.8), y2 = round1(r * 1.6);
+    var rc = round1(r * 4), aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M' + x + ',-' + y1 + aP + '-' + x + ',-' + y1 + aP + '0,' + y2 + aP + x + ',-' + y1 + 'Z';
+  },
+  'star-square': function(r) {
+    var rp = round1(r * 1.1), rc = round1(r * 2);
+    var aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + rp + ',-' + rp + aP + '-' + rp + ',' + rp +
+      aP + rp + ',' + rp + aP + rp + ',-' + rp + aP + '-' + rp + ',-' + rp + 'Z';
+  },
+  'star-diamond': function(r) {
+    var rp = round1(r * 1.4), rc = round1(r * 1.9);
+    var aP = 'A ' + rc + ',' + rc + ' 0 0 1 ';
+    return 'M-' + rp + ',0' + aP + '0,' + rp + aP + rp + ',0' + aP + '0,-' + rp + aP + '-' + rp + ',0Z';
+  },
+  'diamond-tall': function(r) {
+    var x = round1(r * 0.7), y = round1(r * 1.4);
+    return 'M0,' + y + 'L' + x + ',0L0,-' + y + 'L-' + x + ',0Z';
+  },
+  'diamond-wide': function(r) {
+    var x = round1(r * 1.4), y = round1(r * 0.7);
+    return 'M0,' + y + 'L' + x + ',0L0,-' + y + 'L-' + x + ',0Z';
+  },
+  hourglass: function(r) {
+    var rs = round1(r);
+    return 'M' + rs + ',' + rs + 'H-' + rs + 'L' + rs + ',-' + rs + 'H-' + rs + 'Z';
+  },
+  bowtie: function(r) {
+    var rs = round1(r);
+    return 'M' + rs + ',' + rs + 'V-' + rs + 'L-' + rs + ',' + rs + 'V-' + rs + 'Z';
+  },
+  'circle-cross': function(r) {
+    var rs = round1(r);
+    return 'M0,' + rs + 'V-' + rs + 'M' + rs + ',0H-' + rs +
+      'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  'circle-x': function(r) {
+    var rs = round1(r), rc = round1(r / sqrt2);
+    return 'M' + rc + ',' + rc + 'L-' + rc + ',-' + rc +
+      'M' + rc + ',-' + rc + 'L-' + rc + ',' + rc +
+      'M' + rs + ',0A' + rs + ',' + rs + ' 0 1,1 0,-' + rs + 'A' + rs + ',' + rs + ' 0 0,1 ' + rs + ',0Z';
+  },
+  'square-cross': function(r) {
+    var rs = round1(r);
+    return 'M0,' + rs + 'V-' + rs + 'M' + rs + ',0H-' + rs +
+      'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  'square-x': function(r) {
+    var rs = round1(r);
+    return 'M' + rs + ',' + rs + 'L-' + rs + ',-' + rs +
+      'M' + rs + ',-' + rs + 'L-' + rs + ',' + rs +
+      'M' + rs + ',' + rs + 'H-' + rs + 'V-' + rs + 'H' + rs + 'Z';
+  },
+  'diamond-cross': function(r) {
+    var rd = round1(r * 1.3);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z' +
+      'M0,-' + rd + 'V' + rd + 'M-' + rd + ',0H' + rd;
+  },
+  'diamond-x': function(r) {
+    var rd = round1(r * 1.3), r2 = round1(r * 0.65);
+    return 'M' + rd + ',0L0,' + rd + 'L-' + rd + ',0L0,-' + rd + 'Z' +
+      'M-' + r2 + ',-' + r2 + 'L' + r2 + ',' + r2 +
+      'M-' + r2 + ',' + r2 + 'L' + r2 + ',-' + r2;
+  },
+  'cross-thin': function(r) {
+    var rc = round1(r * 1.4);
+    return 'M0,' + rc + 'V-' + rc + 'M' + rc + ',0H-' + rc;
+  },
+  'x-thin': function(r) {
+    var rx = round1(r);
+    return 'M' + rx + ',' + rx + 'L-' + rx + ',-' + rx + 'M' + rx + ',-' + rx + 'L-' + rx + ',' + rx;
+  },
+  asterisk: function(r) {
+    var rc = round1(r * 1.2), rs = round1(r * 0.85);
+    return 'M0,' + rc + 'V-' + rc + 'M' + rc + ',0H-' + rc +
+      'M' + rs + ',' + rs + 'L-' + rs + ',-' + rs + 'M' + rs + ',-' + rs + 'L-' + rs + ',' + rs;
+  },
+  hash: function(r) {
+    var r1 = round1(r / 2), r2 = round1(r);
+    return 'M' + r1 + ',' + r2 + 'V-' + r2 +
+      'M' + (r1 - r2) + ',-' + r2 + 'V' + r2 +
+      'M' + r2 + ',' + r1 + 'H-' + r2 +
+      'M-' + r2 + ',' + (r1 - r2) + 'H' + r2;
+  },
+  'y-up': function(r) {
+    var x = round1(r * 1.2), y0 = round1(r * 1.6), y1 = round1(r * 0.8);
+    return 'M-' + x + ',' + y1 + 'L0,0M' + x + ',' + y1 + 'L0,0M0,-' + y0 + 'L0,0';
+  },
+  'y-down': function(r) {
+    var x = round1(r * 1.2), y0 = round1(r * 1.6), y1 = round1(r * 0.8);
+    return 'M-' + x + ',-' + y1 + 'L0,0M' + x + ',-' + y1 + 'L0,0M0,' + y0 + 'L0,0';
+  },
+  'y-left': function(r) {
+    var y = round1(r * 1.2), x0 = round1(r * 1.6), x1 = round1(r * 0.8);
+    return 'M' + x1 + ',' + y + 'L0,0M' + x1 + ',-' + y + 'L0,0M-' + x0 + ',0L0,0';
+  },
+  'y-right': function(r) {
+    var y = round1(r * 1.2), x0 = round1(r * 1.6), x1 = round1(r * 0.8);
+    return 'M-' + x1 + ',' + y + 'L0,0M-' + x1 + ',-' + y + 'L0,0M' + x0 + ',0L0,0';
+  },
+  'line-ew': function(r) { var rc = round1(r * 1.4); return 'M' + rc + ',0H-' + rc; },
+  'line-ns': function(r) { var rc = round1(r * 1.4); return 'M0,' + rc + 'V-' + rc; },
+  'line-ne': function(r) { var rx = round1(r); return 'M' + rx + ',-' + rx + 'L-' + rx + ',' + rx; },
+  'line-nw': function(r) { var rx = round1(r); return 'M' + rx + ',' + rx + 'L-' + rx + ',-' + rx; },
+  'arrow-up': function(r) {
+    var rx = round1(r), ry = round1(r * 2);
+    return 'M0,0L-' + rx + ',' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-down': function(r) {
+    var rx = round1(r), ry = round1(r * 2);
+    return 'M0,0L-' + rx + ',-' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-left': function(r) {
+    var rx = round1(r * 2), ry = round1(r);
+    return 'M0,0L' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-right': function(r) {
+    var rx = round1(r * 2), ry = round1(r);
+    return 'M0,0L-' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-bar-up': function(r) {
+    var rx = round1(r), ry = round1(r * 2);
+    return 'M-' + rx + ',0H' + rx + 'M0,0L-' + rx + ',' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-bar-down': function(r) {
+    var rx = round1(r), ry = round1(r * 2);
+    return 'M-' + rx + ',0H' + rx + 'M0,0L-' + rx + ',-' + ry + 'H' + rx + 'Z';
+  },
+  'arrow-bar-left': function(r) {
+    var rx = round1(r * 2), ry = round1(r);
+    return 'M0,-' + ry + 'V' + ry + 'M0,0L' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  'arrow-bar-right': function(r) {
+    var rx = round1(r * 2), ry = round1(r);
+    return 'M0,-' + ry + 'V' + ry + 'M0,0L-' + rx + ',-' + ry + 'V' + ry + 'Z';
+  },
+  arrow: function(r) {
+    var headAngle = PI / 2.5;
+    var x = 2 * r * cos(headAngle), y = 2 * r * sin(headAngle);
+    return 'M0,0L' + (-x) + ',' + y + 'L' + x + ',' + y + 'Z';
+  },
+  'arrow-wide': function(r) {
+    var headAngle = PI / 4;
+    var x = 2 * r * cos(headAngle), y = 2 * r * sin(headAngle);
+    return 'M0,0L' + (-x) + ',' + y + 'A ' + (2*r) + ',' + (2*r) + ' 0 0 1 ' + x + ',' + y + 'Z';
+  }
+};
+
+// New (integer) paths from symbol_defs.js p: fields
+var NEW = {
+  circle:            'M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z',
+  square:            'M20,20H-20V-20H20Z',
+  diamond:           'M26,0L0,26L-26,0L0,-26Z',
+  cross:             'M24,8H8V24H-8V8H-24V-8H-8V-24H8V-8H24Z',
+  x:                 'M0,11l11,11l11,-11l-11,-11l11,-11l-11,-11l-11,11l-11,-11l-11,11l11,11l-11,11l11,11Z',
+  'triangle-up':     'M-23,10H23L0,-20Z',
+  'triangle-down':   'M-23,-10H23L0,20Z',
+  'triangle-left':   'M10,-23V23L-20,0Z',
+  'triangle-right':  'M-10,-23V23L20,0Z',
+  'triangle-ne':     'M-24,-12H12V24Z',
+  'triangle-se':     'M12,-24V12H-24Z',
+  'triangle-sw':     'M24,12H-12V-24Z',
+  'triangle-nw':     'M-12,24V-12H24Z',
+  pentagon:          'M19,-6L12,16H-12L-19,-6L0,-20Z',
+  hexagon:           'M17,-10V10L0,20L-17,10V-10L0,-20Z',
+  hexagon2:          'M-10,17H10L20,0L10,-17H-10L-20,0Z',
+  octagon:           'M-8,-18H8L18,-8V8L8,18H-8L-18,8V-8Z',
+  star:              'M6,-9H27L10,3L16,23L0,11L-16,23L-10,3L-27,-9H-6L0,-28Z',
+  hexagram:          'M-15,0l-8,-13h15l8,-13l8,13h15l-8,13l8,13h-15l-8,13l-8,-13h-15Z',
+  'star-triangle-up':   'M-28,16A80,80 0 0 1 28,16A80,80 0 0 1 0,-32A80,80 0 0 1 -28,16Z',
+  'star-triangle-down': 'M28,-16A80,80 0 0 1 -28,-16A80,80 0 0 1 0,32A80,80 0 0 1 28,-16Z',
+  'star-square':     'M-22,-22A40,40 0 0 1 -22,22A40,40 0 0 1 22,22A40,40 0 0 1 22,-22A40,40 0 0 1 -22,-22Z',
+  'star-diamond':    'M-28,0A38,38 0 0 1 0,28A38,38 0 0 1 28,0A38,38 0 0 1 0,-28A38,38 0 0 1 -28,0Z',
+  'diamond-tall':    'M0,28L14,0L0,-28L-14,0Z',
+  'diamond-wide':    'M0,14L28,0L0,-14L-28,0Z',
+  hourglass:         'M20,20H-20L20,-20H-20Z',
+  bowtie:            'M20,20V-20L-20,20V-20Z',
+  'circle-cross':    'M0,20V-20M20,0H-20M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z',
+  'circle-x':        'M14,14L-14,-14M14,-14L-14,14M20,0A20,20 0 1,1 0,-20A20,20 0 0,1 20,0Z',
+  'square-cross':    'M0,20V-20M20,0H-20M20,20H-20V-20H20Z',
+  'square-x':        'M20,20L-20,-20M20,-20L-20,20M20,20H-20V-20H20Z',
+  'diamond-cross':   'M26,0L0,26L-26,0L0,-26ZM0,-26V26M-26,0H26',
+  'diamond-x':       'M26,0L0,26L-26,0L0,-26ZM-13,-13L13,13M-13,13L13,-13',
+  'cross-thin':      'M0,28V-28M28,0H-28',
+  'x-thin':          'M20,20L-20,-20M20,-20L-20,20',
+  asterisk:          'M0,24V-24M24,0H-24M17,17L-17,-17M17,-17L-17,17',
+  hash:              'M10,20V-20M-10,-20V20M20,10H-20M-20,-10H20',
+  'y-up':            'M-24,16L0,0M24,16L0,0M0,-32L0,0',
+  'y-down':          'M-24,-16L0,0M24,-16L0,0M0,32L0,0',
+  'y-left':          'M16,24L0,0M16,-24L0,0M-32,0L0,0',
+  'y-right':         'M-16,24L0,0M-16,-24L0,0M32,0L0,0',
+  'line-ew':         'M28,0H-28',
+  'line-ns':         'M0,28V-28',
+  'line-ne':         'M20,-20L-20,20',
+  'line-nw':         'M20,20L-20,-20',
+  'arrow-up':        'M0,0L-20,40H20Z',
+  'arrow-down':      'M0,0L-20,-40H20Z',
+  'arrow-left':      'M0,0L40,-20V20Z',
+  'arrow-right':     'M0,0L-40,-20V20Z',
+  'arrow-bar-up':    'M-20,0H20M0,0L-20,40H20Z',
+  'arrow-bar-down':  'M-20,0H20M0,0L-20,-40H20Z',
+  'arrow-bar-left':  'M0,-20V20M0,0L40,-20V20Z',
+  'arrow-bar-right': 'M0,-20V20M0,0L-40,-20V20Z',
+  arrow:             'M0,0L-12,38L12,38Z',
+  'arrow-wide':      'M0,0L-28,28A40,40 0 0 1 28,28Z'
+};
+
+var noFill = {
+  'cross-thin':1,'x-thin':1,asterisk:1,hash:1,
+  'y-up':1,'y-down':1,'y-left':1,'y-right':1,
+  'line-ew':1,'line-ns':1,'line-ne':1,'line-nw':1
+};
+
+var order = [
+  'circle','square','diamond','cross','x',
+  'triangle-up','triangle-down','triangle-left','triangle-right',
+  'triangle-ne','triangle-se','triangle-sw','triangle-nw',
+  'pentagon','hexagon','hexagon2','octagon',
+  'star','hexagram',
+  'star-triangle-up','star-triangle-down','star-square','star-diamond',
+  'diamond-tall','diamond-wide',
+  'hourglass','bowtie',
+  'circle-cross','circle-x','square-cross','square-x',
+  'diamond-cross','diamond-x',
+  'cross-thin','x-thin','asterisk','hash',
+  'y-up','y-down','y-left','y-right',
+  'line-ew','line-ns','line-ne','line-nw',
+  'arrow-up','arrow-down','arrow-left','arrow-right',
+  'arrow-bar-up','arrow-bar-down','arrow-bar-left','arrow-bar-right',
+  'arrow','arrow-wide'
+];
+
+var SIZE = 80, C = SIZE / 2; // canvas size, centre
+
+function drawPath(canvas, pathStr, isNoFill) {
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  // transform: origin at centre, y-axis flipped (SVG y points down — same as canvas)
+  ctx.save();
+  ctx.translate(C, C);
+  var scale = 1; // paths already at r=20, canvas is 80px so r=20 fits well
+  ctx.scale(scale, scale);
+  var p = new Path2D(pathStr);
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 2;
+  if (isNoFill) {
+    ctx.stroke(p);
+  } else {
+    ctx.fillStyle = '#000';
+    ctx.fill(p);
+    ctx.stroke(p);
+  }
+  ctx.restore();
+}
+
+function pixelDiff(canvasA, canvasB) {
+  var ctxA = canvasA.getContext('2d');
+  var ctxB = canvasB.getContext('2d');
+  var dA = ctxA.getImageData(0, 0, SIZE, SIZE).data;
+  var dB = ctxB.getImageData(0, 0, SIZE, SIZE).data;
+  var count = 0;
+  var diff = new Uint8ClampedArray(dA.length);
+  for (var i = 0; i < dA.length; i += 4) {
+    var da = Math.abs(dA[i] - dB[i]) + Math.abs(dA[i+1] - dB[i+1]) +
+             Math.abs(dA[i+2] - dB[i+2]) + Math.abs(dA[i+3] - dB[i+3]);
+    if (da > 0) {
+      count++;
+      diff[i] = 255; diff[i+1] = 0; diff[i+2] = 0; diff[i+3] = Math.min(255, da * 4);
+    } else {
+      diff[i+3] = 0;
+    }
+  }
+  return { count: count, data: diff };
+}
+
+function makeDiffCanvas(canvasA, canvasB) {
+  var c = document.createElement('canvas');
+  c.width = SIZE; c.height = SIZE;
+  var r = pixelDiff(canvasA, canvasB);
+  var ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  // Show base (A) in very light gray
+  ctx.drawImage(canvasA, 0, 0);
+  ctx.globalAlpha = 0.15;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, SIZE, SIZE);
+  ctx.globalAlpha = 1;
+  // Overlay diff
+  var id = ctx.createImageData(SIZE, SIZE);
+  id.data.set(r.data);
+  ctx.putImageData(id, 0, 0);
+  return { canvas: c, count: r.count };
+}
+
+function td(child, cls) {
+  var el = document.createElement('td');
+  if (cls) el.className = cls;
+  if (child instanceof HTMLElement) el.appendChild(child);
+  else el.textContent = child;
+  return el;
+}
+
+var table = document.querySelector('table');
+var totalR0 = 0, totalR1 = 0;
+
+order.forEach(function(name, idx) {
+  var nf = !!noFill[name];
+  var r = 20;
+
+  var pOld = OLD[name](r);
+  var pNew = NEW[name];
+  var pR1  = R1[name](r);
+
+  var cOld = document.createElement('canvas'); cOld.width = SIZE; cOld.height = SIZE;
+  var cNew = document.createElement('canvas'); cNew.width = SIZE; cNew.height = SIZE;
+  var cR1  = document.createElement('canvas'); cR1.width  = SIZE; cR1.height = SIZE;
+
+  drawPath(cOld, pOld, nf);
+  drawPath(cNew, pNew, nf);
+  drawPath(cR1,  pR1,  nf);
+
+  var d0 = makeDiffCanvas(cOld, cNew);
+  var d1 = makeDiffCanvas(cOld, cR1);
+  totalR0 += d0.count;
+  totalR1 += d1.count;
+
+  function cell(canvas) {
+    var td = document.createElement('td');
+    td.appendChild(canvas);
+    return td;
+  }
+  function diffCell(d) {
+    var tdEl = document.createElement('td');
+    tdEl.appendChild(d.canvas);
+    var sp = document.createElement('div');
+    sp.className = 'diff-count ' + (d.count === 0 ? 'zero' : 'nonzero');
+    sp.textContent = 'Δ=' + d.count;
+    tdEl.appendChild(sp);
+    return tdEl;
+  }
+
+  var tr = document.createElement('tr');
+  tr.appendChild(td(String(idx), 'name'));
+  tr.appendChild(td(name, 'name'));
+  tr.appendChild(cell(cOld));
+  tr.appendChild(cell(cNew));
+  tr.appendChild(cell(cR1));
+  tr.appendChild(diffCell(d0));
+  tr.appendChild(diffCell(d1));
+  table.appendChild(tr);
+});
+
+document.getElementById('summary').innerHTML =
+  'Total pixel diff Old→New(r0): <strong>' + totalR0 + '</strong> &nbsp;|&nbsp; ' +
+  'Total pixel diff Old→New(r1): <strong>' + totalR1 + '</strong>';
+</script>
+</body>
+</html>
