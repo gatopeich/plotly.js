@@ -387,15 +387,6 @@ drawing.symbolDotPath = DOTPATH;
 //   [200, 300)  closed-dot   (base + dot sub-path)
 //   [300, 400)  open-dot     (same as closed-dot — open is CSS-only)
 //
-// Why do open variants share the same SVG path as their closed counterpart
-// instead of using a path without the closing "Z" command?
-// The SVG "Z" command only draws a line back to the path's start point
-// (geometric closure); it has NO effect on fill or stroke painting.
-// The open/closed distinction requires setting fill:none and stroke:<fillColor>
-// at render time, where fillColor is data-dependent (per-point marker color).
-// That runtime color can never be embedded in a static <symbol> path, so the
-// CSS-based approach is both necessary and correct.
-//
 // Symbols with noDot leave the dot-variant slots undefined (those variants are invalid).
 for(var _i = 0; _i < MAXSYMBOL; _i++) {
     drawing.symbolPaths[_i + 100] = drawing.symbolPaths[_i]; // open = same path
